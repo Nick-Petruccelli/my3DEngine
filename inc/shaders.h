@@ -1,0 +1,1 @@
+char *loadShaderSource(char *path);

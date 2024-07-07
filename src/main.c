@@ -1,6 +1,7 @@
 #include "../glad/glad.h"
 #include "../inc/shaders.h"
 #include <GLFW/glfw3.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -111,13 +112,25 @@ int main() {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
+  // initilize triangle uniform color
+  float time = glfwGetTime();
+  float greenVal = (sinf(time) / 2.0f) + 0.5f;
+  int uniformLoc = glGetUniformLocation(shaderProgram, "triColor");
+  glUseProgram(shaderProgram);
+  glUniform4f(uniformLoc, 0.2f, greenVal, 0.2f, 1.0f);
+
   // render loop
   while (!glfwWindowShouldClose(window)) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // draw triangles
+    // set triangle color with uniform
     glUseProgram(shaderProgram);
+    time = glfwGetTime();
+    greenVal = (sinf(time) / 2.0f) + 0.5f;
+    uniformLoc = glGetUniformLocation(shaderProgram, "triColor");
+    glUniform4f(uniformLoc, 0.2f, greenVal, 0.2f, 1.0f);
+    // draw triangles
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);

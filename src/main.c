@@ -35,51 +35,10 @@ int main() {
   // set up window resizing
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-  // load in vertex shader
-  char *vertexShaderSource = loadShaderSource("./src/shaders/vertex.glsl");
-
-  // create shader object from source code
-  unsigned int vertexShader;
-  vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-  glCompileShader(vertexShader);
-  free(vertexShaderSource);
-
-  int success;
-  char infoLog[512];
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-    printf("ERROR::SHADER::VERTEX::COMPILATION_FAILED\n%s\n", infoLog);
-  }
-
-  char *fragmentShaderSource = loadShaderSource("./src/shaders/fragment.glsl");
-  unsigned int fragmentShader;
-  fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-  glCompileShader(fragmentShader);
-  free(fragmentShaderSource);
-
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-    printf("ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n%s\n", infoLog);
-  }
-
-  // create shader program to link compiled shader code
-  unsigned int shaderProgram;
-  shaderProgram = glCreateProgram();
-  glAttachShader(shaderProgram, vertexShader);
-  glAttachShader(shaderProgram, fragmentShader);
-  glLinkProgram(shaderProgram);
-  glDeleteShader(vertexShader);
-  glDeleteShader(fragmentShader);
-
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-  if (!success) {
-    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-    printf("ERROR::SHADER::PROGRAM::LINK_FAILED\n%s\n", infoLog);
-  }
+  // create shader program
+  printf("hit");
+  unsigned int shaderProgram =
+      createShader("./src/shaders/vertex.glsl", "./src/shaders/fragment.glsl");
 
   // create vertex buffer object and vertex array object
   // create list of verticies to render

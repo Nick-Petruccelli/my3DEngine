@@ -84,10 +84,11 @@ int main() {
   // create vertex buffer object and vertex array object
   // create list of verticies to render
   float vertices[] = {
-      0.5f,  0.5f,  0.0f, // top right
-      0.5f,  -0.5f, 0.0f, // bottom right
-      -0.5f, -0.5f, 0.0f, // bottom left
-      -0.5f, 0.5f,  0.0f  // top left
+      // Position          //Color
+      0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, // top right
+      0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom right
+      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, // bottom left
+      -0.5f, 0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top left
   };
   unsigned int indices[] = {0, 1, 3, 1, 2, 3};
 
@@ -106,30 +107,38 @@ int main() {
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
                GL_STATIC_DRAW);
 
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void *)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6, (void *)0);
   glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 6,
+                        (void *)(sizeof(float) * 3));
+  glEnableVertexAttribArray(1);
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
   // initilize triangle uniform color
+  /*
   float time = glfwGetTime();
   float greenVal = (sinf(time) / 2.0f) + 0.5f;
   int uniformLoc = glGetUniformLocation(shaderProgram, "triColor");
   glUseProgram(shaderProgram);
   glUniform4f(uniformLoc, 0.2f, greenVal, 0.2f, 1.0f);
+  */
 
+  glUseProgram(shaderProgram);
   // render loop
   while (!glfwWindowShouldClose(window)) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     // set triangle color with uniform
+    /*
     glUseProgram(shaderProgram);
     time = glfwGetTime();
     greenVal = (sinf(time) / 2.0f) + 0.5f;
     uniformLoc = glGetUniformLocation(shaderProgram, "triColor");
     glUniform4f(uniformLoc, 0.2f, greenVal, 0.2f, 1.0f);
+    */
     // draw triangles
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

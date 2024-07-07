@@ -1,4 +1,4 @@
-main: src/main.c
+main: src/*
 	gcc src/main.c src/shaders/shaders.c glad/glad.c -o main -lGL -lglfw -lm
 
 clean:

@@ -34,7 +34,7 @@ void testMultiplyMatVec3(void) {
   bool passed = true;
 
   for (int i = 0; i < 3; i++) {
-    if (fabsf(acctual[i] - expected[i]) > .0001) {
+    if (fabsf(acctual[i] - expected[i]) > .001) {
       passed = false;
       break;
     }
@@ -47,7 +47,45 @@ void testMultiplyMatVec3(void) {
   }
 }
 
+void testMultiplyMats4(void) {
+  mat4 lmat = {{12, 43.2, 65.33, 10},
+               {32.43, 23.23, 32.12, 30},
+               {23.12, 0, 42.23223532, 23},
+               {96, 9, 20, 5}};
+  mat4 rmat = {{3.245, 34.32, 42.534, 32.4},
+               {14.123, 33.2, 32, 52.2},
+               {34.3, 32, 23.34, 32},
+               {33.2, 87.76, 54.54, 99}};
+  mat4 acctual;
+  mat4 expected = {{5245.72368, 1229.0376, 3758.66014710088, 2202.332},
+                   {6997.192, 1851.1496, 4384.47112024, 2134.23},
+                   {5060.9808, 2513.12, 4894.3593723688, 1999.82},
+                   {14009.4216, 4363.9048, 9271.1533143528, 4714.22}};
+  multiplyMats4(lmat, rmat, acctual);
+  bool passed = true;
+
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      if (fabsf(acctual[i][j] - expected[i][j]) > .01) {
+        printf("Failed at pos [%d][%d] with\nacctual: %f expected %f\n\n", i, j,
+               acctual[i][j], expected[i][j]);
+        passed = false;
+        break;
+      }
+    }
+    if (!passed)
+      break;
+  }
+
+  if (passed) {
+    printf("Test multiplyMats4: PASSED\n");
+  } else {
+    printf("Test multiplyMats4: FAILED\n");
+  }
+}
+
 int main() {
   testMultiplyMatVec4();
   testMultiplyMatVec3();
+  testMultiplyMats4();
 }

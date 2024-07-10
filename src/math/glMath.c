@@ -91,3 +91,36 @@ void scaleVec4(float x, float y, float z, float w, float *vecIn,
   vecOut[2] = vecIn[2] * z;
   vecOut[3] = vecIn[3] * w;
 }
+
+void multiplyMats2(mat4 lmat, mat4 rmat, mat4 outMat) {
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 2; j++) {
+      outMat[i][j] = 0;
+      for (int k = 0; k < 2; k++) {
+        outMat[i][j] += lmat[k][j] * rmat[i][k];
+      }
+    }
+  }
+}
+
+void multiplyMats3(mat4 lmat, mat4 rmat, mat4 outMat) {
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      outMat[i][j] = 0;
+      for (int k = 0; k < 3; k++) {
+        outMat[i][j] += lmat[k][j] * rmat[i][k];
+      }
+    }
+  }
+}
+
+void multiplyMats4(mat4 lmat, mat4 rmat, mat4 outMat) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      outMat[i][j] = 0;
+      for (int k = 0; k < 4; k++) {
+        outMat[i][j] += lmat[k][j] * rmat[i][k];
+      }
+    }
+  }
+}

@@ -9,10 +9,18 @@ typedef float vec2[2];
 typedef float vec3[3];
 typedef float vec4[4];
 
-vec2 *multiplyMatVec2(mat2 mat, vec2 vec);
-vec3 *multiplyMatVec3(mat3 mat, vec3 vec);
-vec4 *multiplyMatVec4(mat4 mat, vec4 vec);
+void multiplyMatVec2(mat2 mat, vec2 vecIn, vec2 vecOut);
+void multiplyMatVec3(mat3 mat, vec3 vecIn, vec3 vecOut);
+void multiplyMatVec4(mat4 mat, vec4 vec, vec3 vecOut);
 
-mat2 *rotateMat2(mat2 matrix);
-mat3 *rotateMat3(mat3 matrix);
-mat4 *rotateMat4(mat4 matrix);
+void rotateVec2(float theta, vec2 vec, vec2 vecOut);
+void rotateVec3(float x, float y, float z, vec3 vecIn, vec3 vecOut);
+void rotateVec4(float x, float y, float z, float w, vec4 vecIn, vec4 vecOut);
+
+void translateVec2(float x, float y, vec2 vecIn, vec2 vecOut);
+void translateVec3(float x, float y, float z, vec3 vecIn, vec3 vecOut);
+void translateVec4(float x, float y, float z, float w, vec4 vecIn, vec4 vecOut);
+
+void scaleVec2(float x, float y, vec2 vecIn, vec2 vecOut);
+void scaleVec3(float x, float y, float z, vec3 vecIn, vec3 vecOut);
+void scaleVec4(float x, float y, float z, float w, vec4 vecIn, vec4 vecOut);

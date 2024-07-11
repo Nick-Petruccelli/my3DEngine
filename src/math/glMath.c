@@ -1,6 +1,121 @@
 #include "../../inc/glMath.h"
 #include <math.h>
-#include <stdio.h>
+
+void genIdentityMat2(mat2 mat) {
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 2; j++) {
+      if (i == j) {
+        mat[i][j] = 1;
+      } else {
+        mat[i][j] = 0;
+      }
+    }
+  }
+}
+
+void genIdentityMat3(mat3 mat) {
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      if (i == j) {
+        mat[i][j] = 1;
+      } else {
+        mat[i][j] = 0;
+      }
+    }
+  }
+}
+
+void genIdentityMat4(mat4 mat) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      if (i == j) {
+        mat[i][j] = 1;
+      } else {
+        mat[i][j] = 0;
+      }
+    }
+  }
+}
+
+void genRoatationMat2(float theta, mat2 mat) {
+  mat2 rotMat = {{cosf(theta), sinf(theta)}, {-sinf(theta), cosf(theta)}};
+
+  for (int i = 0; i < 2; i++) {
+    for (int j = 0; j < 2; j++) {
+      mat[i][j] = rotMat[i][j];
+    }
+  }
+}
+
+void genRoatationMat3(float x, float y, float z, mat3 mat) {
+  mat3 rotMat = {
+      {cosf(z) * cosf(y), cosf(y) * sinf(z), -sinf(y)},
+      {sinf(x) * sinf(y) * cosf(z) - cosf(x) * sinf(z),
+       sinf(x) * sinf(y) * cosf(z) + cosf(x) * sinf(z), sinf(x) * cosf(y)},
+      {cosf(x) * sinf(y) * cosf(z) + sinf(x) * sinf(z),
+       cosf(x) * sinf(y) * cosf(z) - sinf(x) * sinf(z), cosf(x) * cosf(y)}};
+
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
+      mat[i][j] = rotMat[i][j];
+    }
+  }
+}
+
+void genRotationMat4(float x, float y, float z, mat4 mat) {
+  mat4 rotMat = {
+      {cosf(z) * cosf(y), cosf(y) * sinf(z), -sinf(y), 0},
+      {sinf(x) * sinf(y) * cosf(z) - cosf(x) * sinf(z),
+       sinf(x) * sinf(y) * cosf(z) + cosf(x) * sinf(z), sinf(x) * cosf(y), 0},
+      {cosf(x) * sinf(y) * cosf(z) + sinf(x) * sinf(z),
+       cosf(x) * sinf(y) * cosf(z) - sinf(x) * sinf(z), cosf(x) * cosf(y), 0},
+      {0, 0, 0, 1}};
+
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      mat[i][j] = rotMat[i][j];
+    }
+  }
+}
+
+void genTranslationMat3(float x, float y, mat3 mat) {
+  genIdentityMat3(mat);
+
+  mat[2][0] = x;
+  mat[2][1] = y;
+}
+
+void genTranslationMat4(float x, float y, float z, mat4 mat) {
+  genIdentityMat4(mat);
+
+  mat[3][0] = x;
+  mat[3][1] = y;
+  mat[3][2] = z;
+}
+
+void genScaleMat2(float x, float y, mat2 mat) {
+  genIdentityMat2(mat);
+
+  mat[0][0] = x;
+  mat[1][1] = y;
+}
+
+void genScaleMat3(float x, float y, float z, mat3 mat) {
+  genIdentityMat3(mat);
+
+  mat[0][0] = x;
+  mat[1][1] = y;
+  mat[2][2] = z;
+}
+
+void genScaleMat4(float x, float y, float z, float w, mat4 mat) {
+  genIdentityMat4(mat);
+
+  mat[0][0] = x;
+  mat[1][1] = y;
+  mat[2][2] = z;
+  mat[3][3] = w;
+}
 
 void multiplyMatVec2(mat2 matrix, vec2 vecIn, vec2 vecOut) {
   vecOut[0] = matrix[0][0] * vecIn[0] + matrix[1][0] * vecIn[0];
@@ -92,7 +207,7 @@ void scaleVec4(float x, float y, float z, float w, float *vecIn,
   vecOut[3] = vecIn[3] * w;
 }
 
-void multiplyMats2(mat4 lmat, mat4 rmat, mat4 outMat) {
+void multiplyMats2(mat2 lmat, mat2 rmat, mat2 outMat) {
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 2; j++) {
       outMat[i][j] = 0;
@@ -103,7 +218,7 @@ void multiplyMats2(mat4 lmat, mat4 rmat, mat4 outMat) {
   }
 }
 
-void multiplyMats3(mat4 lmat, mat4 rmat, mat4 outMat) {
+void multiplyMats3(mat3 lmat, mat3 rmat, mat3 outMat) {
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
       outMat[i][j] = 0;

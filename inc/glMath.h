@@ -9,6 +9,21 @@ typedef float vec2[2];
 typedef float vec3[3];
 typedef float vec4[4];
 
+void genIdentityMat2(mat2 mat);
+void genIdentityMat3(mat3 mat);
+void genIdentityMat4(mat4 mat);
+
+void genRoatationMat2(float theta, mat2 mat);
+void genRoatationMat3(float x, float y, float z, mat3 mat);
+void genRoatationMat4(float x, float y, float z, float w, mat4 mat);
+
+void genTranslationMat3(float x, float y, mat3 mat);
+void genTranslationMat4(float x, float y, float z, mat4 mat);
+
+void genScaleMat2(float x, float y, mat2 mat);
+void genScaleMat3(float x, float y, float z, mat3 mat);
+void genScaleMat4(float x, float y, float z, float w, mat4 mat);
+
 void multiplyMatVec2(mat2 mat, vec2 vecIn, vec2 vecOut);
 void multiplyMatVec3(mat3 mat, vec3 vecIn, vec3 vecOut);
 void multiplyMatVec4(mat4 mat, vec4 vec, vec3 vecOut);
@@ -25,6 +40,6 @@ void scaleVec2(float x, float y, vec2 vecIn, vec2 vecOut);
 void scaleVec3(float x, float y, float z, vec3 vecIn, vec3 vecOut);
 void scaleVec4(float x, float y, float z, float w, vec4 vecIn, vec4 vecOut);
 
-void multiplyMats2(mat4 lmat, mat4 rmat, mat4 matOut);
-void multiplyMats3(mat4 lmat, mat4 rmat, mat4 matOut);
+void multiplyMats2(mat2 lmat, mat2 rmat, mat2 matOut);
+void multiplyMats3(mat3 lmat, mat3 rmat, mat3 matOut);
 void multiplyMats4(mat4 lmat, mat4 rmat, mat4 matOut);

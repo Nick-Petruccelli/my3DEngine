@@ -1,5 +1,5 @@
-#include "../../inc/shaders.h"
-#include "../../glad/glad.h"
+#include "../inc/shaders.h"
+#include "../inc/glad.h"
 #include <stdio.h>
 #include <stdlib.h>
 

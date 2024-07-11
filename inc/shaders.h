@@ -1,7 +1,7 @@
 #ifndef SHADER_H
 #define SHADER_H
 #endif
-#include "../glad/glad.h"
+#include "./glad.h"
 
 char *loadShaderSource(char *path);
 unsigned int compileShader(char *source, int shaderType);

@@ -1,12 +1,13 @@
-#include "../../inc/glMath.h"
+#include "../inc/glMath.h"
 #include <math.h>
+#include <stdlib.h>
 
 float *convertMat4ToArr(mat4 mat) {
-  static float arr[16];
+  float *arr = malloc(sizeof(float) * 16);
 
   for (int i = 0; i < 4; i++) {
     for (int j = 0; j < 4; j++) {
-      arr[(i * 3) + j] = mat[i][j];
+      arr[(i * 4) + j] = mat[i][j];
     }
   }
 

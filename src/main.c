@@ -1,5 +1,5 @@
-#include "../glad/glad.h"
 #include "../inc/glMath.h"
+#include "../inc/glad.h"
 #include "../inc/shaders.h"
 #include "../inc/textures.h"
 #include <GLFW/glfw3.h>
@@ -53,18 +53,6 @@ int main() {
   };
   unsigned int indices[] = {0, 1, 3, 1, 2, 3};
 
-  // create transformation matrix
-  mat4 transformMat;
-  genIdentityMat4(transformMat);
-  mat4 tempMat;
-  genRoatationMat4(0, 0, 3.14 / 4, 0, tempMat);
-  multiplyMats4(transformMat, tempMat, transformMat);
-
-  // store transormationMat in shader uniform
-  unsigned int transformLoc =
-      glGetUniformLocation(shaderProgram, "transformMat");
-  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, convertMat4ToArr(transformMat));
-
   // create vertex buffer object
   unsigned int VBO, VAO, EBO;
   glGenVertexArrays(1, &VAO);
@@ -100,6 +88,19 @@ int main() {
 
     // draw triangles
     glBindTexture(GL_TEXTURE_2D, texture);
+
+    // create transformation matrix
+    mat4 transformMat;
+    genIdentityMat4(transformMat);
+    mat4 tempMat;
+    //  genRoatationMat4(0.0f, 0.0f, 3.14f / 4.0f, 0.0f, tempMat);
+    // multiplyMats4(transformMat, tempMat, transformMat);
+
+    unsigned int transformLoc =
+        glGetUniformLocation(shaderProgram, "transform");
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE,
+                       convertMat4ToArr(transformMat));
+
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

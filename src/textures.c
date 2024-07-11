@@ -1,6 +1,6 @@
 #define STB_IMAGE_IMPLEMENTATION
-#include "../../glad/glad.h"
-#include "../../inc/stb_image.h"
+#include "../inc/glad.h"
+#include "../inc/stb_image.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

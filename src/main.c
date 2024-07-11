@@ -93,8 +93,10 @@ int main() {
     mat4 identityMat;
     genIdentityMat4(identityMat);
     mat4 tempMat;
-    genRotationMat4(0.0f, 0.0f, 3.14f / 4.0f, tempMat);
+    float rotation = (float)glfwGetTime();
+    genRotationMat4(0.0f, 0.0f, rotation, tempMat);
     mat4 finMat;
+    multiplyMats4(identityMat, tempMat, finMat);
     multiplyMats4(identityMat, tempMat, finMat);
 
     unsigned int transformLoc =

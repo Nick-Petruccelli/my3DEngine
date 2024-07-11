@@ -64,9 +64,9 @@ void genRoatationMat3(float x, float y, float z, mat3 mat) {
   mat3 rotMat = {
       {cosf(z) * cosf(y), cosf(y) * sinf(z), -sinf(y)},
       {sinf(x) * sinf(y) * cosf(z) - cosf(x) * sinf(z),
-       sinf(x) * sinf(y) * cosf(z) + cosf(x) * sinf(z), sinf(x) * cosf(y)},
+       sinf(z) * sinf(y) * sinf(x) + cosf(z) * cosf(x), sinf(x) * cosf(y)},
       {cosf(x) * sinf(y) * cosf(z) + sinf(x) * sinf(z),
-       cosf(x) * sinf(y) * cosf(z) - sinf(x) * sinf(z), cosf(x) * cosf(y)}};
+       cosf(x) * sinf(y) * sinf(z) - sinf(x) * cosf(z), cosf(x) * cosf(y)}};
 
   for (int i = 0; i < 3; i++) {
     for (int j = 0; j < 3; j++) {
@@ -79,9 +79,9 @@ void genRotationMat4(float x, float y, float z, mat4 mat) {
   mat4 rotMat = {
       {cosf(z) * cosf(y), cosf(y) * sinf(z), -sinf(y), 0},
       {sinf(x) * sinf(y) * cosf(z) - cosf(x) * sinf(z),
-       sinf(x) * sinf(y) * cosf(z) + cosf(x) * sinf(z), sinf(x) * cosf(y), 0},
+       sinf(z) * sinf(y) * sinf(x) + cosf(z) * cosf(x), sinf(x) * cosf(y), 0},
       {cosf(x) * sinf(y) * cosf(z) + sinf(x) * sinf(z),
-       cosf(x) * sinf(y) * cosf(z) - sinf(x) * sinf(z), cosf(x) * cosf(y), 0},
+       cosf(x) * sinf(y) * sinf(z) - sinf(x) * cosf(z), cosf(x) * cosf(y), 0},
       {0, 0, 0, 1}};
 
   for (int i = 0; i < 4; i++) {

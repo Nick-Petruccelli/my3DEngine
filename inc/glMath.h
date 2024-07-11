@@ -17,7 +17,7 @@ void genIdentityMat4(mat4 mat);
 
 void genRoatationMat2(float theta, mat2 mat);
 void genRoatationMat3(float x, float y, float z, mat3 mat);
-void genRoatationMat4(float x, float y, float z, float w, mat4 mat);
+void genRotationMat4(float x, float y, float z, mat4 mat);
 
 void genTranslationMat3(float x, float y, mat3 mat);
 void genTranslationMat4(float x, float y, float z, mat4 mat);

@@ -90,16 +90,16 @@ int main() {
     glBindTexture(GL_TEXTURE_2D, texture);
 
     // create transformation matrix
-    mat4 transformMat;
-    genIdentityMat4(transformMat);
+    mat4 identityMat;
+    genIdentityMat4(identityMat);
     mat4 tempMat;
-    //  genRoatationMat4(0.0f, 0.0f, 3.14f / 4.0f, 0.0f, tempMat);
-    // multiplyMats4(transformMat, tempMat, transformMat);
+    genRotationMat4(0.0f, 0.0f, 3.14f / 4.0f, tempMat);
+    mat4 finMat;
+    multiplyMats4(identityMat, tempMat, finMat);
 
     unsigned int transformLoc =
         glGetUniformLocation(shaderProgram, "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE,
-                       convertMat4ToArr(transformMat));
+    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, convertMat4ToArr(finMat));
 
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);

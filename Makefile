@@ -15,6 +15,8 @@ $(BIN): $(OBJS)
 $(OBJ)/%.o: $(SRC)/%.c
 	$(CC) -c $< -o $@ $(CFLAGS)
 
+run: $(BIN)
+	./$(BIN)
 clean:
 	$(RM) $(BINDIR)/* $(OBJ)/*
 

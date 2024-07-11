@@ -1,6 +1,18 @@
 #include "../../inc/glMath.h"
 #include <math.h>
 
+float *convertMat4ToArr(mat4 mat) {
+  static float arr[16];
+
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      arr[(i * 3) + j] = mat[i][j];
+    }
+  }
+
+  return arr;
+}
+
 void genIdentityMat2(mat2 mat) {
   for (int i = 0; i < 2; i++) {
     for (int j = 0; j < 2; j++) {

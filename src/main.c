@@ -54,6 +54,16 @@ int main() {
   unsigned int indices[] = {0, 1, 3, 1, 2, 3};
 
   // create transformation matrix
+  mat4 transformMat;
+  genIdentityMat4(transformMat);
+  mat4 tempMat;
+  genRoatationMat4(0, 0, 3.14 / 4, 0, tempMat);
+  multiplyMats4(transformMat, tempMat, transformMat);
+
+  // store transormationMat in shader uniform
+  unsigned int transformLoc =
+      glGetUniformLocation(shaderProgram, "transformMat");
+  glUniformMatrix4fv(transformLoc, 1, GL_FALSE, convertMat4ToArr(transformMat));
 
   // create vertex buffer object
   unsigned int VBO, VAO, EBO;

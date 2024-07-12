@@ -3,6 +3,7 @@
 #include "../inc/shaders.h"
 #include "../inc/textures.h"
 #include <GLFW/glfw3.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -81,6 +82,49 @@ int main() {
   glBindVertexArray(0);
 
   glUseProgram(shaderProgram);
+  mat4 model;
+  mat4 trans;
+  mat4 rot;
+  mat4 scale;
+  genTranslationMat4(0, 0, 0, trans);
+  genRotationMat4(-3.14 / 2.5, 0, 0, rot);
+  genScaleMat4(1, 1, 1, 1, scale);
+  genModelMat(trans, rot, scale, model);
+  mat4 view;
+  genTranslationMat4(0, 0, -3.0f, trans);
+  genRotationMat4(0, 0, 0, rot);
+  genViewMat(trans, rot, view);
+  mat4 proj;
+  // genOrthographicMat(0, 600, 0, 800, .1, 100, proj);
+  genPerspectiveMat(45, 800.0f / 600.0f, .1, 100, proj);
+  printf("Model Matrix:\n");
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      printf("%f\t", model[j][i]);
+    }
+    printf("\n");
+  }
+  printf("\nViewMatrix:\n");
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      printf("%f\t", view[j][i]);
+    }
+    printf("\n");
+  }
+  printf("\nProjection Matrix:\n");
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      printf("%f\t", proj[j][i]);
+    }
+    printf("\n");
+  }
+  int modelLoc = glGetUniformLocation(shaderProgram, "model");
+  glUniformMatrix4fv(modelLoc, 1, GL_FALSE, convertMat4ToArr(model));
+  int viewLoc = glGetUniformLocation(shaderProgram, "view");
+  glUniformMatrix4fv(viewLoc, 1, GL_FALSE, convertMat4ToArr(view));
+  int projLoc = glGetUniformLocation(shaderProgram, "proj");
+  glUniformMatrix4fv(projLoc, 1, GL_FALSE, convertMat4ToArr(proj));
+
   // render loop
   while (!glfwWindowShouldClose(window)) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -88,21 +132,6 @@ int main() {
 
     // draw triangles
     glBindTexture(GL_TEXTURE_2D, texture);
-
-    // create transformation matrix
-    mat4 identityMat;
-    genIdentityMat4(identityMat);
-    mat4 tempMat;
-    float rotation = (float)glfwGetTime();
-    genRotationMat4(0.0f, 0.0f, rotation, tempMat);
-    mat4 finMat;
-    multiplyMats4(identityMat, tempMat, finMat);
-    multiplyMats4(identityMat, tempMat, finMat);
-
-    unsigned int transformLoc =
-        glGetUniformLocation(shaderProgram, "transform");
-    glUniformMatrix4fv(transformLoc, 1, GL_FALSE, convertMat4ToArr(finMat));
-
     glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

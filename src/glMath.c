@@ -130,6 +130,55 @@ void genScaleMat4(float x, float y, float z, float w, mat4 mat) {
   mat[3][3] = w;
 }
 
+void genModelMat(mat4 trans, mat4 rot, mat4 scale, mat4 out) {
+  mat4 temp;
+  multiplyMats4(trans, rot, temp);
+  multiplyMats4(scale, temp, out);
+}
+
+void genViewMat(mat4 trans, mat4 rot, mat4 out) {
+  multiplyMats4(trans, rot, out);
+}
+
+void genPerspectiveMat(float fov, float aspectRatio, float near, float far,
+                       mat4 out) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      out[i][j] = 0;
+    }
+  }
+
+  const float DEG2RAD = acos(-1.0f) / 180;
+
+  float tangent = tan(fov / 2 * DEG2RAD); // tangent of half fovX
+  float right = near * tangent;           // half width of near plane
+  float top = right / aspectRatio;        // half height of near plane
+
+  // params: left, right, bottom, top, near(front), far(back)
+  out[0][0] = near / right;
+  out[1][1] = near / top;
+  out[2][2] = -(far + near) / (far - near);
+  out[2][3] = -1;
+  out[3][2] = -(2 * far * near) / (far - near);
+}
+
+void genOrthographicMat(float r, float l, float t, float b, float n, float f,
+                        mat4 out) {
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
+      out[i][j] = 0;
+    }
+  }
+
+  out[0][0] = 2 / (r - l);
+  out[1][1] = 2 / (t - b);
+  out[2][2] = -2 / (f - n);
+  out[3][0] = -((r + l) / (r - l));
+  out[3][1] = -((t + b) / (t - b));
+  out[3][2] = -((f + n) / (f - n));
+  out[3][3] = 1;
+}
+
 void multiplyMatVec2(mat2 matrix, vec2 vecIn, vec2 vecOut) {
   vecOut[0] = matrix[0][0] * vecIn[0] + matrix[1][0] * vecIn[0];
   vecOut[1] = matrix[1][1] * vecIn[1] + matrix[2][1] * vecIn[1];

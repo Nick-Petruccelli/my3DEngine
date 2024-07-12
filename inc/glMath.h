@@ -26,6 +26,13 @@ void genScaleMat2(float x, float y, mat2 mat);
 void genScaleMat3(float x, float y, float z, mat3 mat);
 void genScaleMat4(float x, float y, float z, float w, mat4 mat);
 
+void genModelMat(mat4 transMat, mat4 rotMat, mat4 scaleMat, mat4 outMat);
+void genViewMat(mat4 transMat, mat4 rotMat, mat4 outMat);
+void genPerspectiveMat(float fov, float aspectRatio, float nearPlane,
+                       float farPlane, mat4 out);
+void genOrthographicMat(float r, float l, float t, float b, float n, float f,
+                        mat4 out);
+
 void multiplyMatVec2(mat2 mat, vec2 vecIn, vec2 vecOut);
 void multiplyMatVec3(mat3 mat, vec3 vecIn, vec3 vecOut);
 void multiplyMatVec4(mat4 mat, vec4 vec, vec3 vecOut);

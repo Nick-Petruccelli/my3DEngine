@@ -301,3 +301,9 @@ void multiplyMats4(mat4 lmat, mat4 rmat, mat4 outMat) {
     }
   }
 }
+
+void crossProduct3(vec3 left, vec3 right, vec3 out) {
+  out[0] = left[1] * right[2] - left[2] * right[1];
+  out[1] = -1 * left[0] * right[2] + left[2] * right[0];
+  out[2] = left[0] * right[1] - left[1] * right[0];
+}

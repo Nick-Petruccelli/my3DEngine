@@ -84,8 +84,31 @@ void testMultiplyMats4(void) {
   }
 }
 
+void testCrossProduct3() {
+  vec3 left = {4, 5, 10};
+  vec3 right = {2, 8, 4};
+  vec3 acctual;
+  vec3 expected = {-60, 4, 22};
+  crossProduct3(left, right, acctual);
+  bool passed = true;
+
+  for (int i = 0; i < 3; i++) {
+    if (acctual[i] != expected[i]) {
+      passed = false;
+      break;
+    }
+  }
+
+  if (passed) {
+    printf("Test crossProduct3: PASSED\n");
+  } else {
+    printf("Test crossProduct3: FAILED\n");
+  }
+}
+
 int main() {
   testMultiplyMatVec4();
   testMultiplyMatVec3();
   testMultiplyMats4();
+  testCrossProduct3();
 }

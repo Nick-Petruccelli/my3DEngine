@@ -307,3 +307,14 @@ void crossProduct3(vec3 left, vec3 right, vec3 out) {
   out[1] = -1 * left[0] * right[2] + left[2] * right[0];
   out[2] = left[0] * right[1] - left[1] * right[0];
 }
+
+void normalizeVec3(vec3 in, vec3 out) {
+  float sum = 0;
+  for (int i = 0; i < 3; i++) {
+    sum += in[i] * in[i];
+  }
+  float scalar = sqrtf(sum);
+  for (int i = 0; i < 3; i++) {
+    out[i] = in[i] / scalar;
+  }
+}

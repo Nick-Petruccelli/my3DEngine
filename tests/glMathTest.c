@@ -106,9 +106,31 @@ void testCrossProduct3() {
   }
 }
 
+void testNormalizeVec3() {
+  vec3 in = {4, 2, 5};
+  vec3 acctual;
+  vec3 expected = {0.596285, 0.298142, 0.745356};
+  bool passed = true;
+
+  normalizeVec3(in, acctual);
+  for (int i = 0; i < 3; i++) {
+    if (fabsf(expected[i] - acctual[i]) > .01) {
+      passed = false;
+      break;
+    }
+  }
+
+  if (passed) {
+    printf("Test normalizeVec3: PASSED\n");
+  } else {
+    printf("Test normalizeVec3: FAILED\n");
+  }
+}
+
 int main() {
   testMultiplyMatVec4();
   testMultiplyMatVec3();
   testMultiplyMats4();
   testCrossProduct3();
+  testNormalizeVec3();
 }

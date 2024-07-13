@@ -49,8 +49,9 @@ void scaleVec2(float x, float y, vec2 vecIn, vec2 vecOut);
 void scaleVec3(float x, float y, float z, vec3 vecIn, vec3 vecOut);
 void scaleVec4(float x, float y, float z, float w, vec4 vecIn, vec4 vecOut);
 
-void crossProduct3(vec3 left, vec3 right, vec3 out);
-
 void multiplyMats2(mat2 lmat, mat2 rmat, mat2 matOut);
 void multiplyMats3(mat3 lmat, mat3 rmat, mat3 matOut);
 void multiplyMats4(mat4 lmat, mat4 rmat, mat4 matOut);
+
+void crossProduct3(vec3 left, vec3 right, vec3 out);
+void normalizeVec3(vec3 in, vec3 out);

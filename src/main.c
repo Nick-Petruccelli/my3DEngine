@@ -1,3 +1,4 @@
+#include "../inc/camera.h"
 #include "../inc/glMath.h"
 #include "../inc/glad.h"
 #include "../inc/shaders.h"
@@ -128,14 +129,20 @@ int main() {
       mat4 scale;
       genTranslationMat4(cubePositions[i][0], cubePositions[i][1],
                          cubePositions[i][2], trans);
-      genRotationMat4(glfwGetTime(), glfwGetTime() * .5, glfwGetTime() * 1.5,
-                      rot);
+      // genRotationMat4(glfwGetTime(), glfwGetTime() * .5, glfwGetTime() * 1.5,
+      //                 rot);
+      genRotationMat4(0, 0, 0, rot);
       genScaleMat4(1, 1, 1, 1, scale);
       genModelMat(trans, rot, scale, model);
+      const float radius = 10.0f;
+      float camx = sinf(glfwGetTime()) * radius;
+      float camy = sinf(glfwGetTime()) * radius;
+      float camz = cosf(glfwGetTime()) * radius;
       mat4 view;
-      genTranslationMat4(0, 0, -3.0f, trans);
-      genRotationMat4(0, 0, 0, rot);
-      genViewMat(trans, rot, view);
+      vec3 camPos = {camx, camy, camz};
+      vec3 origin = {0, 0, 0};
+      vec3 up = {0, 1, 0};
+      lookAt(camPos, origin, up, view);
       mat4 proj;
       // genOrthographicMat(0, 600, 0, 800, .1, 100, proj);
       genPerspectiveMat(45, 800.0f / 600.0f, .1, 100, proj);

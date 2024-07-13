@@ -313,8 +313,8 @@ void normalizeVec3(vec3 in, vec3 out) {
   for (int i = 0; i < 3; i++) {
     sum += in[i] * in[i];
   }
-  float scalar = sqrtf(sum);
+  float scalar = 1 / sqrtf(sum);
   for (int i = 0; i < 3; i++) {
-    out[i] = in[i] / scalar;
+    out[i] = in[i] * scalar;
   }
 }

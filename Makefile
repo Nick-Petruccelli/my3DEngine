@@ -31,3 +31,6 @@ test: $(TESTOBJS) $(filter-out $(OBJ)/main.o, $(OBJS))
 
 $(OBJ)/$(TEST)/%.o: $(TEST)/%.c
 	$(CC) -c $< -o $@ $(CFLAGS)
+
+debug: $(OBJS)
+	$(CC) $(OBJS) -g -o $(BINDIR)/$@ $(CFLAGS)

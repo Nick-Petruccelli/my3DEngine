@@ -10,6 +10,9 @@ typedef float vec3[3];
 typedef float vec4[4];
 
 float *convertMat4ToArr(mat4 mat);
+void copyVec2(vec2 src, vec2 dest);
+void copyVec3(vec3 src, vec3 dest);
+void copyVec4(vec4 src, vec4 dest);
 
 void genIdentityMat2(mat2 mat);
 void genIdentityMat3(mat3 mat);

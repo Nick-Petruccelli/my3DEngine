@@ -1,5 +1,6 @@
 #include "../inc/glMath.h"
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 float *convertMat4ToArr(mat4 mat) {
@@ -12,6 +13,22 @@ float *convertMat4ToArr(mat4 mat) {
   }
 
   return arr;
+}
+
+void copyVec2(vec2 src, vec2 dest) {
+  for (int i = 0; i < 2; i++) {
+    dest[i] = src[i];
+  }
+}
+void copyVec3(vec3 src, vec3 dest) {
+  for (int i = 0; i < 3; i++) {
+    dest[i] = src[i];
+  }
+}
+void copyVec4(vec4 src, vec4 dest) {
+  for (int i = 0; i < 4; i++) {
+    dest[i] = src[i];
+  }
 }
 
 void genIdentityMat2(mat2 mat) {

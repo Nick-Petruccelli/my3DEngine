@@ -1,14 +1,13 @@
 #include "../inc/camera.h"
 #include "../inc/glMath.h"
 #include "../inc/glad.h"
+#include "../inc/my3DEngine.h"
 #include "../inc/shaders.h"
 #include "../inc/textures.h"
 #include <GLFW/glfw3.h>
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 
 int main() {
   // window settings init
@@ -52,6 +51,8 @@ int main() {
   unsigned int texture = generateTexture("box.png");
 
   // create list of verticies to render
+  vec3 cubeColor = {0, 50, 0};
+  float *verts1 = loadCubeData(cubeColor);
   float vertices[] = {
       -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.5f,  -0.5f, -0.5f, 1.0f, 0.0f,
       0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
@@ -76,26 +77,25 @@ int main() {
       -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
       0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
       -0.5f, 0.5f,  0.5f,  0.0f, 0.0f, -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f};
-  unsigned int indices[] = {0, 1, 3, 1, 2, 3};
+
+  vec3 planeColor = {50, 0, 0};
+  float *verts2 = loadPlaneData(planeColor);
 
   // create vertex buffer object
-  unsigned int VBO, VAO, EBO;
+  unsigned int VBO, VAO;
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
-  glGenBuffers(1, &EBO);
 
   glBindVertexArray(VAO);
 
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  printf("size of verts1:\t%lu\n", 180 * sizeof(float));
+  printf("size of vertices:\t%lu\n", sizeof(vertices));
+  glBufferData(GL_ARRAY_BUFFER, 288 * sizeof(float), verts1, GL_STATIC_DRAW);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-               GL_STATIC_DRAW);
-
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5, (void *)0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 8, (void *)0);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 5,
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8,
                         (void *)(sizeof(float) * 3));
   glEnableVertexAttribArray(1);
 
@@ -116,12 +116,24 @@ int main() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    if (floorf(glfwGetTime() / 5) < 1) {
+      glBindBuffer(GL_ARRAY_BUFFER, VBO);
+      glBufferData(GL_ARRAY_BUFFER, 288 * sizeof(float), verts1,
+                   GL_DYNAMIC_DRAW);
+    } else {
+      printf("hit");
+      glBindBuffer(GL_ARRAY_BUFFER, VBO);
+      glBufferData(GL_ARRAY_BUFFER, 48 * sizeof(float), verts2,
+                   GL_DYNAMIC_DRAW);
+    }
+
     // draw triangles
     glBindTexture(GL_TEXTURE_2D, texture);
 
     // transform vertecies
     glUseProgram(shaderProgram);
 
+    glBindVertexArray(VAO);
     for (int i = 0; i < 10; i++) {
       mat4 model;
       mat4 trans;
@@ -129,14 +141,15 @@ int main() {
       mat4 scale;
       genTranslationMat4(cubePositions[i][0], cubePositions[i][1],
                          cubePositions[i][2], trans);
-      // genRotationMat4(glfwGetTime(), glfwGetTime() * .5, glfwGetTime() * 1.5,
+      // genRotationMat4(glfwGetTime(), glfwGetTime() * .5, glfwGetTime()
+      // * 1.5,
       //                 rot);
       genRotationMat4(0, 0, 0, rot);
       genScaleMat4(1, 1, 1, 1, scale);
       genModelMat(trans, rot, scale, model);
       const float radius = 10.0f;
       float camx = sinf(glfwGetTime()) * radius;
-      float camy = sinf(glfwGetTime()) * radius;
+      float camy = 0;
       float camz = cosf(glfwGetTime()) * radius;
       mat4 view;
       vec3 camPos = {camx, camy, camz};
@@ -153,7 +166,6 @@ int main() {
       int projLoc = glGetUniformLocation(shaderProgram, "proj");
       glUniformMatrix4fv(projLoc, 1, GL_FALSE, convertMat4ToArr(proj));
 
-      glBindVertexArray(VAO);
       glDrawArrays(GL_TRIANGLES, 0, 36);
     }
     //    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -164,8 +176,4 @@ int main() {
   glfwTerminate();
 
   return 0;
-}
-
-void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
-  glViewport(0, 0, width, height);
 }

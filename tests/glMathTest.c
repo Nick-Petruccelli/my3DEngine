@@ -127,7 +127,7 @@ void testNormalizeVec3() {
   }
 }
 
-int main() {
+void glMathTest() {
   testMultiplyMatVec4();
   testMultiplyMatVec3();
   testMultiplyMats4();

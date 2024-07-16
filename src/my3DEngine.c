@@ -1,4 +1,5 @@
 #include "../inc/my3DEngine.h"
+#include "../inc/assetManager.h"
 #include "../inc/camera.h"
 #include "../inc/glMath.h"
 #include "../inc/glad.h"
@@ -110,101 +111,6 @@ unsigned int placePrimitive(Primative prim, vec3 pos, vec3 rot, vec3 scale,
   copyVec3(pos, obj.scale);
 
   return objID;
-}
-
-float *loadPlaneData(vec3 color) {
-  float *data = malloc(sizeof(float) * 48);
-
-  float x = -0.5f;
-  float y = -0.5f;
-  float tx = 0;
-  float ty = 0;
-  bool evenTriangle = true;
-  for (int i = 0; i < 6; i++) {
-    data[(i * 8) + 0] = x;
-    data[(i * 8) + 1] = y;
-    data[(i * 8) + 2] = 0;
-    data[(i * 8) + 3] = tx;
-    data[(i * 8) + 4] = ty;
-    data[(i * 8) + 5] = color[0];
-    data[(i * 8) + 6] = color[1];
-    data[(i * 8) + 7] = color[2];
-    if (i == 2) {
-      evenTriangle = !evenTriangle;
-      continue;
-    }
-    if ((i % 2 == 0) && evenTriangle) {
-      x += 1;
-      tx += 1;
-    }
-    if ((i % 2 == 0) && !evenTriangle) {
-      y -= 1;
-      ty -= 1;
-    }
-    if ((i % 2 == 1) && evenTriangle) {
-      y += 1;
-      ty += 1;
-    }
-    if ((i % 2 == 1) && !evenTriangle) {
-      x -= 1;
-      tx -= 1;
-    }
-  }
-  return data;
-}
-float *loadCubeData(vec3 color) {
-  float *data = malloc(sizeof(float) * 288);
-  float vertices[] = {
-      -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.5f,  -0.5f, -0.5f, 1.0f, 0.0f,
-      0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
-      -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-
-      -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, 0.5f,  -0.5f, 0.5f,  1.0f, 0.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 1.0f, 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-      -0.5f, 0.5f,  0.5f,  0.0f, 1.0f, -0.5f, -0.5f, 0.5f,  0.0f, 0.0f,
-
-      -0.5f, 0.5f,  0.5f,  1.0f, 0.0f, -0.5f, 0.5f,  -0.5f, 1.0f, 1.0f,
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-      -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, -0.5f, 0.5f,  0.5f,  1.0f, 0.0f,
-
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
-      0.5f,  -0.5f, -0.5f, 0.0f, 1.0f, 0.5f,  -0.5f, -0.5f, 0.0f, 1.0f,
-      0.5f,  -0.5f, 0.5f,  0.0f, 0.0f, 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-      -0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 0.5f,  -0.5f, -0.5f, 1.0f, 1.0f,
-      0.5f,  -0.5f, 0.5f,  1.0f, 0.0f, 0.5f,  -0.5f, 0.5f,  1.0f, 0.0f,
-      -0.5f, -0.5f, 0.5f,  0.0f, 0.0f, -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-
-      -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,
-      0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-      -0.5f, 0.5f,  0.5f,  0.0f, 0.0f, -0.5f, 0.5f,  -0.5f, 0.0f, 1.0f};
-
-  for (int i = 0; i < 36; i++) {
-    data[(i * 8)] = vertices[(i * 5)];
-    data[(i * 8) + 1] = vertices[(i * 5) + 1];
-    data[(i * 8) + 2] = vertices[(i * 5) + 2];
-    data[(i * 8) + 3] = vertices[(i * 5) + 3];
-    data[(i * 8) + 4] = vertices[(i * 5) + 4];
-    data[(i * 8) + 5] = color[0];
-    data[(i * 8) + 6] = color[1];
-    data[(i * 8) + 7] = color[2];
-  }
-
-  return data;
-}
-float *loadSphereData(vec3 color) {
-  float *data = malloc(sizeof(float) * 48);
-
-  for (int i = 0; i < 6; i++) {
-  }
-  return data;
-}
-float *loadWedgeData(vec3 color) {
-  float *data = malloc(sizeof(float) * 48);
-
-  for (int i = 0; i < 6; i++) {
-  }
-  return data;
 }
 
 void translateObject(unsigned int objID, vec3 translate) {

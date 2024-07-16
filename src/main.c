@@ -6,6 +6,7 @@
 #include "../inc/textures.h"
 #include <GLFW/glfw3.h>
 #include <math.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -80,6 +81,12 @@ int main() {
 
   vec3 planeColor = {50, 0, 0};
   float *verts2 = loadPlaneData(planeColor);
+  for (int i = 0; i < 6; i++) {
+    for (int j = 0; j < 8; j++) {
+      printf("%f, ", verts2[(i * 8) + j]);
+    }
+    printf("\n");
+  }
 
   // create vertex buffer object
   unsigned int VBO, VAO;
@@ -112,19 +119,23 @@ int main() {
   // render loop
   glEnable(GL_DEPTH_TEST);
 
+  bool cube = true;
+  float lastChange = glfwGetTime();
   while (!glfwWindowShouldClose(window)) {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if (floorf(glfwGetTime() / 5) < 1) {
+    if (lastChange + 5 < glfwGetTime()) {
+      cube = !cube;
+      lastChange = glfwGetTime();
+    }
+    if (cube) {
       glBindBuffer(GL_ARRAY_BUFFER, VBO);
       glBufferData(GL_ARRAY_BUFFER, 288 * sizeof(float), verts1,
-                   GL_DYNAMIC_DRAW);
+                   GL_STATIC_DRAW);
     } else {
-      printf("hit");
       glBindBuffer(GL_ARRAY_BUFFER, VBO);
-      glBufferData(GL_ARRAY_BUFFER, 48 * sizeof(float), verts2,
-                   GL_DYNAMIC_DRAW);
+      glBufferData(GL_ARRAY_BUFFER, 48 * sizeof(float), verts2, GL_STATIC_DRAW);
     }
 
     // draw triangles

@@ -12,7 +12,7 @@ typedef enum { PLANE, CUBE, SPHERE, WEDGE } Primative;
 
 typedef struct {
   unsigned int objID;
-  float *vertData;
+  float *assetPtr;
   vec3 position;
   vec3 rotation;
   vec3 scale;

@@ -1,70 +1,75 @@
+#include "../inc/assetManager.h"
 #include "../inc/glMath.h"
 #include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
 #include <stdlib.h>
 
-float *staticAssetArr;
+StaticAssetArray *SAA;
+unsigned int nextArrID;
+MeshInfoArray MIA;
 
-typedef struct ListNode {
-  unsigned int val;
-  struct ListNode *next;
-} ListNode;
-
-typedef struct {
-  ListNode *head;
-  ListNode *tail;
-  int count;
-} LinkedList;
-
-LinkedList createListF() {
-  LinkedList list;
-  list.head = NULL;
-  list.tail = NULL;
-  list.count = 0;
-
-  return list;
+void initAssetManager(int numStaticArrs, int numMeshes) {
+  SAA = malloc(sizeof(StaticAssetArray) * numStaticArrs);
+  nextArrID = 0;
+  MIA.meshInfo = malloc(sizeof(MeshInfo) * numMeshes);
+  MIA.len = 0;
+  MIA.size = numMeshes;
 }
 
-void listPush(LinkedList list, unsigned int n) {
-  if (list.count == 0) {
-    list.head->val = n;
-    list.head->next = NULL;
-    list.tail->val = n;
-    list.tail->next = NULL;
-    list.count++;
-    return;
-  }
-  if (list.count == 1) {
-    list.head->next = list.tail;
-    list.tail->val = n;
-    return;
-  }
-  ListNode *node;
-  node->val = n;
-  node->next = NULL;
-  list.tail = node;
-}
-
-unsigned int listPop(LinkedList list, unsigned int n) {
-  if (list.count == 0) {
+int createStaticAssetArray(unsigned int size, uint8_t dataPerVert) {
+  SAA[nextArrID].assetData = malloc(sizeof(float) * size);
+  if (SAA == NULL) {
+    printf("ERROR::ASSETMANAGER::CREATESTATICASSETARRAY\nfailed to alocate "
+           "memory for SAA\n");
     return NULL;
   }
-  ListNode *cur = list.head;
-  while (cur->next != NULL) {
-    if (cur->next->val == n) {
-      cur->next = cur->next->next;
-      list.count--;
-      return n;
-    }
-  }
-
-  return NULL;
+  nextArrID++;
+  return nextArrID - 1;
 }
 
-typedef struct {
-  unsigned int arrOffset;
-  unsigned int vertCount;
-  LinkedList entities;
-} MeshInfo;
+int addAsset(unsigned int arrID, float *assetData, bool dynamic) {
+  unsigned int offset = SAA[arrID].len;
+  unsigned int i = 0;
+  while (assetData[i] != '\0') {
+    if (offset + i > SAA[arrID].size) {
+      float *temp = realloc(SAA[arrID].assetData,
+                            SAA[arrID].size * sizeof(StaticAssetArray) * 2);
+      if (temp == NULL) {
+        printf("ERROR::ASSETMANAGER::ADDASSET\nfailed to realocate memory for "
+               "SAA %d\n",
+               arrID);
+        return -1;
+      }
+      SAA[arrID].assetData = temp;
+    }
+    SAA[arrID].assetData[offset + i] = assetData[i];
+    i++;
+  }
+
+  if (MIA.len == MIA.size) {
+    MeshInfo *temp;
+    temp = realloc(MIA.meshInfo, MIA.size * sizeof(MeshInfo) * 2);
+    if (temp == NULL) {
+      printf("ERROR::ASSETMANAGER::ADDASSET\nfailed to realocate memory for "
+             "MIA\n");
+      return -1;
+    }
+    MIA.meshInfo = temp;
+  }
+
+  SAA[arrID].len += i;
+  MeshInfo meshInfo;
+  meshInfo.dynamic = dynamic;
+  meshInfo.arrID = arrID;
+  meshInfo.arrOffset = offset;
+  meshInfo.numDataPoints = i;
+
+  MIA.meshInfo[MIA.len] = meshInfo;
+  MIA.len++;
+  return 0;
+}
+
 float *loadPlaneDataa() {
   static float data[] = {-0.500000, -0.500000, 0.000000, 0.000000, 0.000000,
                          0.500000,  -0.500000, 0.000000, 1.000000, 0.000000,

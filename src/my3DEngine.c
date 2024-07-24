@@ -77,42 +77,6 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
 }
 
-unsigned int placePrimitive(Primative prim, vec3 pos, vec3 rot, vec3 scale,
-                            vec3 color) {
-  if (sceneObjects.numObjects == sceneObjects.size) {
-    printf("ERROR::MY#DENGINE::SCENEOBJECT::PLACEPRIMATIVE\nmax objects "
-           "already placed\n");
-    return NULL;
-  }
-  Object obj;
-  unsigned int objID = nextObjID++;
-  sceneObjects.numObjects++;
-  switch (prim) {
-  case PLANE:
-    obj.vertData = loadPlaneData(color);
-    break;
-  case CUBE:
-    obj.vertData = loadCubeData(color);
-    break;
-  case SPHERE:
-    obj.vertData = loadSphereData(color);
-    break;
-  case WEDGE:
-    obj.vertData = loadWedgeData(color);
-    break;
-  default:
-    printf("ERROR::MY3DENGINE::SCENEOBJECT::PLACEPRIMATIVE\nfunction did not "
-           "recive a valid enum option\n");
-    return NULL;
-  };
-
-  copyVec3(pos, obj.position);
-  copyVec3(rot, obj.rotation);
-  copyVec3(pos, obj.scale);
-
-  return objID;
-}
-
 void translateObject(unsigned int objID, vec3 translate) {
   for (int i = 0; i < 3; i++) {
     sceneObjects.objects[objID].position[i] += translate[i];
@@ -135,5 +99,3 @@ void scaleObject(unsigned int objID, vec3 scale) {
     sceneObjects.objects[objID].scale[i] *= scale[i];
   }
 }
-
-void render() {}

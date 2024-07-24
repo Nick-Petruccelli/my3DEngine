@@ -7,7 +7,7 @@
 
 MeshInfoArray MIA;
 
-void initAssetManager(int numMeshes) {
+void initAssetManager(unsigned int numMeshes) {
   MIA.meshInfo = malloc(sizeof(MeshInfo) * numMeshes);
   MIA.len = 0;
   MIA.size = numMeshes;
@@ -29,20 +29,26 @@ int addAsset(float *assetData, unsigned int assetVerts, GLenum usage) {
   glBindVertexArray(VAO);
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   int size = 0;
-  while (assetData[size] != '\0') {
+  while (size < 180) {
+    printf("%f\n", assetData[size]);
     size++;
   }
+  printf("size: %d\n", size);
   glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), assetData, usage);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
   glEnableVertexAttribArray(0);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8,
-                        (void *)(sizeof(float) * 3));
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+                        (void *)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
 
-  MeshInfo meshInfo = MIA.meshInfo[MIA.len];
-  meshInfo.vao = VAO;
-  meshInfo.numVerts = size / 8;
-  meshInfo.meshID = MIA.len;
+  MeshInfo *meshInfo = &MIA.meshInfo[MIA.len];
+  meshInfo->vao = VAO;
+  meshInfo->vbo = VBO;
+  meshInfo->numVerts = size / 5;
+  printf("numVerts: %d\n", meshInfo->numVerts);
+  printf("VBO: %d, VAO: %d\n", VBO, VAO);
+  printf("VBO: %d, VAO: %d\n", MIA.meshInfo[0].vbo, MIA.meshInfo[0].vao);
+  meshInfo->meshID = MIA.len;
   MIA.len++;
 
   glBindVertexArray(0);
@@ -52,7 +58,7 @@ int addAsset(float *assetData, unsigned int assetVerts, GLenum usage) {
   return 0;
 }
 
-float *loadPlaneDataa() {
+float *loadPlaneData() {
   static float data[] = {-0.500000, -0.500000, 0.000000, 0.000000, 0.000000,
                          0.500000,  -0.500000, 0.000000, 1.000000, 0.000000,
                          0.500000,  0.500000,  0.000000, 1.000000, 1.000000,
@@ -63,7 +69,7 @@ float *loadPlaneDataa() {
   return data;
 }
 
-float *loadCubeData(vec3 color) {
+float *loadCubeData() {
   static float data[] = {
       -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, 0.5f,  -0.5f, -0.5f, 1.0f, 0.0f,
       0.5f,  0.5f,  -0.5f, 1.0f, 1.0f, 0.5f,  0.5f,  -0.5f, 1.0f, 1.0f,

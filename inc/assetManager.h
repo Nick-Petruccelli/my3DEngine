@@ -3,11 +3,14 @@
 #include <stdint.h>
 #endif
 
+#include "glMath.h"
+#include "glad.h"
 #include "linkedList.h"
 #include <stdbool.h>
 
 typedef struct {
   unsigned int vao;
+  unsigned int vbo;
   bool dynamic;
   int meshID;
   unsigned int numVerts;
@@ -20,3 +23,9 @@ typedef struct MeshInfoArray {
 } MeshInfoArray;
 
 extern MeshInfoArray MIA;
+
+void initAssetManager(unsigned int numMeshes);
+int addAsset(float *assetData, unsigned int assetVerts, GLenum usage);
+
+float *loadPlaneData();
+float *loadCubeData();

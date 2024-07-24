@@ -1,72 +1,54 @@
 #include "../inc/assetManager.h"
 #include "../inc/glMath.h"
+#include "../inc/glad.h"
 #include <stdbool.h>
-#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
-StaticAssetArray *SAA;
-unsigned int nextArrID;
 MeshInfoArray MIA;
 
-void initAssetManager(int numStaticArrs, int numMeshes) {
-  SAA = malloc(sizeof(StaticAssetArray) * numStaticArrs);
-  nextArrID = 0;
+void initAssetManager(int numMeshes) {
   MIA.meshInfo = malloc(sizeof(MeshInfo) * numMeshes);
   MIA.len = 0;
   MIA.size = numMeshes;
 }
 
-int createStaticAssetArray(unsigned int size, uint8_t dataPerVert) {
-  SAA[nextArrID].assetData = malloc(sizeof(float) * size);
-  if (SAA == NULL) {
-    printf("ERROR::ASSETMANAGER::CREATESTATICASSETARRAY\nfailed to alocate "
-           "memory for SAA\n");
-    return NULL;
-  }
-  nextArrID++;
-  return nextArrID - 1;
-}
-
-int addAsset(unsigned int arrID, float *assetData, bool dynamic) {
-  unsigned int offset = SAA[arrID].len;
-  unsigned int i = 0;
-  while (assetData[i] != '\0') {
-    if (offset + i > SAA[arrID].size) {
-      float *temp = realloc(SAA[arrID].assetData,
-                            SAA[arrID].size * sizeof(StaticAssetArray) * 2);
-      if (temp == NULL) {
-        printf("ERROR::ASSETMANAGER::ADDASSET\nfailed to realocate memory for "
-               "SAA %d\n",
-               arrID);
-        return -1;
-      }
-      SAA[arrID].assetData = temp;
-    }
-    SAA[arrID].assetData[offset + i] = assetData[i];
-    i++;
-  }
-
-  if (MIA.len == MIA.size) {
-    MeshInfo *temp;
-    temp = realloc(MIA.meshInfo, MIA.size * sizeof(MeshInfo) * 2);
+int addAsset(float *assetData, unsigned int assetVerts, GLenum usage) {
+  if (MIA.len > MIA.size) {
+    MeshInfo *temp = realloc(MIA.meshInfo, MIA.size * 2 * sizeof(float));
     if (temp == NULL) {
-      printf("ERROR::ASSETMANAGER::ADDASSET\nfailed to realocate memory for "
-             "MIA\n");
+      printf("ERROR::ASSETMANAGER::ADDASSET\nFailed to reallocate memory for "
+             "MeshInfoArray\n");
       return -1;
     }
     MIA.meshInfo = temp;
   }
+  unsigned int VBO, VAO;
+  glGenVertexArrays(1, &VAO);
+  glGenBuffers(1, &VBO);
+  glBindVertexArray(VAO);
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  int size = 0;
+  while (assetData[size] != '\0') {
+    size++;
+  }
+  glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), assetData, usage);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), 0);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 8,
+                        (void *)(sizeof(float) * 3));
+  glEnableVertexAttribArray(1);
 
-  SAA[arrID].len += i;
-  MeshInfo meshInfo;
-  meshInfo.dynamic = dynamic;
-  meshInfo.arrID = arrID;
-  meshInfo.arrOffset = offset;
-  meshInfo.numDataPoints = i;
-
-  MIA.meshInfo[MIA.len] = meshInfo;
+  MeshInfo meshInfo = MIA.meshInfo[MIA.len];
+  meshInfo.vao = VAO;
+  meshInfo.numVerts = size / 8;
+  meshInfo.meshID = MIA.len;
   MIA.len++;
+
+  glBindVertexArray(0);
+  glDisableVertexAttribArray(0);
+  glDisableVertexAttribArray(1);
+  glBindBuffer(GL_ARRAY_BUFFER, 0);
   return 0;
 }
 

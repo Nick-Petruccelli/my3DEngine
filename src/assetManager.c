@@ -30,10 +30,8 @@ int addAsset(float *assetData, unsigned int assetVerts, GLenum usage) {
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   int size = 0;
   while (size < 180) {
-    printf("%f\n", assetData[size]);
     size++;
   }
-  printf("size: %d\n", size);
   glBufferData(GL_ARRAY_BUFFER, size * sizeof(float), assetData, usage);
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), 0);
   glEnableVertexAttribArray(0);
@@ -45,9 +43,6 @@ int addAsset(float *assetData, unsigned int assetVerts, GLenum usage) {
   meshInfo->vao = VAO;
   meshInfo->vbo = VBO;
   meshInfo->numVerts = size / 5;
-  printf("numVerts: %d\n", meshInfo->numVerts);
-  printf("VBO: %d, VAO: %d\n", VBO, VAO);
-  printf("VBO: %d, VAO: %d\n", MIA.meshInfo[0].vbo, MIA.meshInfo[0].vao);
   meshInfo->meshID = MIA.len;
   MIA.len++;
 

@@ -87,12 +87,18 @@ unsigned int queuePop(IDQueue *q) {
   return out;
 }
 
-Scene *initScene(unsigned int size) {
-  Scene *scene;
+Scene *initScene(unsigned int size, Camera *cam) {
+  Scene *scene = malloc(sizeof(Scene));
   scene->sceneObjects = malloc(size * sizeof(unsigned int));
   scene->numObjects = 0;
   scene->sceneObjectsSize = size;
   scene->nextIDQueue = createQueue(100);
+  scene->camera = cam;
+  printf("cam: xyz = ");
+  for (int i = 0; i < 3; i++) {
+    printf("%f", scene->camera->position[i]);
+  }
+  printf("\n");
 
   return scene;
 }

@@ -1,5 +1,6 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 #endif
+#include "sceneManager.h"
 
-void render();
+void render(Scene *scene, unsigned int shaderProgram);

@@ -1,4 +1,15 @@
 #include "../inc/camera.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+Camera *initCamera(vec3 pos, vec3 target, float fov) {
+  Camera *cam = malloc(sizeof(Camera));
+  copyVec3(pos, cam->position);
+  copyVec3(target, cam->target);
+  cam->fov = fov;
+
+  return cam;
+}
 
 void lookAt(vec3 camPos, vec3 target, vec3 up, mat4 view) {
   vec3 zaxis;

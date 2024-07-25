@@ -10,21 +10,6 @@
 
 typedef enum { PLANE, CUBE, SPHERE, WEDGE } Primative;
 
-typedef struct {
-  unsigned int objID;
-  float *assetPtr;
-  vec3 position;
-  vec3 rotation;
-  vec3 scale;
-  unsigned int textureID;
-} Object;
-
-typedef struct {
-  Object *objects;
-  unsigned int size;
-  unsigned int numObjects;
-} SceneObjects;
-
 int engineInit(unsigned int windowWidth, unsigned int windowHeight);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 

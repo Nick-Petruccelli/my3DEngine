@@ -4,10 +4,10 @@
 #include "../inc/glad.h"
 #include "../inc/my3DEngine.h"
 #include "../inc/renderer.h"
+#include "../inc/sceneManager.h"
 #include "../inc/shaders.h"
 #include "../inc/textures.h"
 #include <GLFW/glfw3.h>
-#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,8 +58,15 @@ int main() {
   float *verts2 = loadPlaneData();
 
   initAssetManager(2);
-  addAsset(verts1, 36, GL_STATIC_DRAW);
-  printf("VBO: %d, VAO: %d\n", MIA.meshInfo[0].vbo, MIA.meshInfo[0].vao);
+  vec3 camPos = {0, 0, 10};
+  vec3 origin = {0, 0, 0};
+  Camera *cam = initCamera(camPos, origin, 45);
+  Scene *mainScene = initScene(10, cam);
+  int cubeMeshID = addAsset(verts1, 36, GL_STATIC_DRAW);
+  vec3 cubePos = {1, 0, 3};
+  vec3 cubeRot = {1.2, 3.2, .43};
+  vec3 cubeScale = {1, 1, 1};
+  addSceneObject(mainScene, cubePos, cubeRot, cubeScale, cubeMeshID);
 
   // render loop
   glEnable(GL_DEPTH_TEST);
@@ -70,37 +77,7 @@ int main() {
 
     // draw triangles
     glBindTexture(GL_TEXTURE_2D, texture);
-
-    // transform vertecies
-    glUseProgram(shaderProgram);
-
-    mat4 model;
-    mat4 trans;
-    mat4 rot;
-    mat4 scale;
-    genRotationMat4(0, 0, 0, rot);
-    genScaleMat4(1, 1, 1, 1, scale);
-    genTranslationMat4(0, 0, 0, trans);
-    genModelMat(trans, rot, scale, model);
-    const float radius = 10.0f;
-    float camx = sinf(glfwGetTime()) * radius;
-    float camy = 0;
-    float camz = cosf(glfwGetTime()) * radius;
-    mat4 view;
-    vec3 camPos = {camx, camy, camz};
-    vec3 origin = {0, 0, 0};
-    vec3 up = {0, 1, 0};
-    lookAt(camPos, origin, up, view);
-    mat4 proj;
-    genPerspectiveMat(45, 800.0f / 600.0f, .1, 100, proj);
-    int modelLoc = glGetUniformLocation(shaderProgram, "model");
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, convertMat4ToArr(model));
-    int viewLoc = glGetUniformLocation(shaderProgram, "view");
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, convertMat4ToArr(view));
-    int projLoc = glGetUniformLocation(shaderProgram, "proj");
-    glUniformMatrix4fv(projLoc, 1, GL_FALSE, convertMat4ToArr(proj));
-
-    render();
+    render(mainScene, shaderProgram);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

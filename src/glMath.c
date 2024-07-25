@@ -147,10 +147,30 @@ void genScaleMat4(float x, float y, float z, float w, mat4 mat) {
   mat[3][3] = w;
 }
 
+void genModelMatV(vec3 trans, vec3 rot, vec3 scale, mat4 out) {
+  mat4 temp;
+  mat4 transMat;
+  mat4 rotMat;
+  mat4 scaleMat;
+  genTranslationMat4(trans[0], trans[1], trans[2], transMat);
+  genRotationMat4(rot[0], rot[1], rot[2], rotMat);
+  genScaleMat4(scale[0], scale[1], scale[2], 1, scaleMat);
+  multiplyMats4(transMat, rotMat, temp);
+  multiplyMats4(scaleMat, temp, out);
+}
+
 void genModelMat(mat4 trans, mat4 rot, mat4 scale, mat4 out) {
   mat4 temp;
   multiplyMats4(trans, rot, temp);
   multiplyMats4(scale, temp, out);
+}
+
+void genViewMatV(vec3 trans, vec3 rot, mat4 outMat) {
+  mat4 transMat;
+  mat4 rotMat;
+  genTranslationMat4(trans[0], trans[1], trans[2], transMat);
+  genRotationMat4(rot[0], rot[1], rot[2], rotMat);
+  multiplyMats4(transMat, rotMat, outMat);
 }
 
 void genViewMat(mat4 trans, mat4 rot, mat4 out) {

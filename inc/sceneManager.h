@@ -1,7 +1,7 @@
 #ifndef SCENEMANAGER_H
 #define SCENEMANAGER_H
-#endif
 
+#include "camera.h"
 #include "glMath.h"
 
 typedef struct SceneObject {
@@ -25,13 +25,15 @@ typedef struct Scene {
   unsigned int numObjects;
   unsigned int sceneObjectsSize;
   IDQueue *nextIDQueue;
+  Camera *camera;
 } Scene;
 
 IDQueue *createQueue(unsigned int size);
 int resizeQueue(IDQueue *q, unsigned int size);
 int queuePush(IDQueue *q, unsigned int num);
 unsigned int queuePop(IDQueue *q);
-Scene *initScene(unsigned int size);
+Scene *initScene(unsigned int size, Camera *cam);
 unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
                             unsigned int meshID);
 void removeSceneObject(Scene scene, unsigned int objID);
+#endif

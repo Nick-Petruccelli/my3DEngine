@@ -1,11 +1,17 @@
 #include "../inc/sceneManager.h"
 #include "../inc/glMath.h"
 #include <limits.h>
+#include <stdio.h>
 #include <stdlib.h>
 
 IDQueue *createQueue(unsigned int size) {
-  IDQueue *q;
+  IDQueue *q = malloc(sizeof(IDQueue));
   q->queue = malloc(size * sizeof(unsigned int));
+  if (q->queue == NULL) {
+    printf("ERROR::SCENEMANAGER::CREATEQUEUE\nfailed to allocate memory for "
+           "queue\n");
+    return NULL;
+  }
   q->head = 0;
   q->tail = 0;
   q->len = 0;
@@ -15,39 +21,42 @@ IDQueue *createQueue(unsigned int size) {
 }
 
 int resizeQueue(IDQueue *q, unsigned int size) {
-  IDQueue *nq;
-  nq->queue = malloc(size * sizeof(unsigned int));
+  unsigned int *nq = malloc(size * sizeof(unsigned int));
   if (nq == NULL) {
     return -1;
   }
-  int i = 0;
-  while (q->head != q->tail) {
-    nq->queue[i] = q->queue[q->head];
-    q->head = q->head++ % q->size;
-    i++;
+  for (unsigned int i = 0; i < q->size; i++) {
+    unsigned int idx = (q->head + i) % q->size;
+    nq[i] = q->queue[idx];
   }
-  nq->queue[i] = q->queue[q->tail];
-  nq->size = size;
-  nq->len = q->len;
+  free(q->queue);
+  q->queue = nq;
+  q->size = size;
+  q->head = 0;
+  q->tail = q->len - 1;
 
   return 0;
 }
 
 int queuePush(IDQueue *q, unsigned int num) {
-  if (q->tail - q->head == 1) {
-    int e = resizeQueue(q, q->size * 2 * sizeof(unsigned int));
+  if (q->head - q->tail == 1) {
+    int e = resizeQueue(q, q->size * 2);
     if (e < 0)
       return -1;
     q->tail++;
+    if (q->tail >= q->size)
+      q->tail = 0;
     q->queue[q->tail] = num;
     q->len++;
     return 0;
   }
   if (q->head == 0 && q->tail == q->size - 1) {
-    int e = resizeQueue(q, q->size * 2 * sizeof(unsigned int));
+    int e = resizeQueue(q, q->size * 2);
     if (e < 0)
       return -1;
     q->tail++;
+    if (q->tail >= q->size)
+      q->tail = 0;
     q->queue[q->tail] = num;
     q->len++;
     return 0;
@@ -58,6 +67,8 @@ int queuePush(IDQueue *q, unsigned int num) {
     return 0;
   }
   q->tail++;
+  if (q->tail >= q->size)
+    q->tail = 0;
   q->queue[q->tail] = num;
   q->len++;
 
@@ -65,15 +76,12 @@ int queuePush(IDQueue *q, unsigned int num) {
 }
 
 unsigned int queuePop(IDQueue *q) {
-  unsigned int out = q->queue[q->head];
   if (q->len == 0) {
     return UINT_MAX;
   }
-  if (q->head == q->tail) {
-    q->len--;
-    return out;
-  }
+  unsigned int out = q->queue[q->head];
   q->head++;
+  q->len--;
   if (q->head == q->size)
     q->head = 0;
   return out;

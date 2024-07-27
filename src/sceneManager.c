@@ -29,7 +29,8 @@ int resizeQueue(IDQueue *q, unsigned int size) {
     unsigned int idx = (q->head + i) % q->size;
     nq[i] = q->queue[idx];
   }
-  free(q->queue);
+  if (q->queue != NULL)
+    free(q->queue);
   q->queue = nq;
   q->size = size;
   q->head = 0;
@@ -89,18 +90,21 @@ unsigned int queuePop(IDQueue *q) {
 
 Scene *initScene(unsigned int size, Camera *cam) {
   Scene *scene = malloc(sizeof(Scene));
-  scene->sceneObjects = malloc(size * sizeof(unsigned int));
+  scene->sceneObjects = malloc(size * sizeof(SceneObject));
   scene->numObjects = 0;
   scene->sceneObjectsSize = size;
   scene->nextIDQueue = createQueue(100);
   scene->camera = cam;
-  printf("cam: xyz = ");
-  for (int i = 0; i < 3; i++) {
-    printf("%f", scene->camera->position[i]);
-  }
-  printf("\n");
 
   return scene;
+}
+
+void deleteScene(Scene *scene) {
+  free(scene->nextIDQueue->queue);
+  free(scene->nextIDQueue);
+  free(scene->sceneObjects);
+  free(scene->camera);
+  free(scene);
 }
 
 unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
@@ -112,14 +116,15 @@ unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
   obj.meshID = meshID;
   if (scene->nextIDQueue->len == 0) {
     obj.objID = scene->numObjects;
-    scene->sceneObjects[scene->numObjects] = obj;
+    scene->sceneObjects[obj.objID] = obj;
     scene->numObjects++;
   } else {
-    unsigned int id = queuePop(scene->nextIDQueue);
-    obj.objID = id;
-    scene->sceneObjects[id] = obj;
+    obj.objID = queuePop(scene->nextIDQueue);
+    scene->sceneObjects[obj.objID] = obj;
     scene->numObjects++;
   }
+  printf("SceneObjectSize: %d\nObjID: %d\n", scene->sceneObjectsSize,
+         obj.objID);
 
   return obj.objID;
 }
@@ -127,5 +132,8 @@ unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
 void removeSceneObject(Scene scene, unsigned int objID) {
   // Set this objects objID at objID to max value so we can check it on render
   scene.sceneObjects[objID].objID = UINT_MAX;
-  queuePush(scene.nextIDQueue, objID);
+  int e = queuePush(scene.nextIDQueue, objID);
+  if (e < 0) {
+    printf("ERROR::SCNENEMANAGER::REMOVESCENEOBJECT\nFailed queuePush.\n");
+  }
 }

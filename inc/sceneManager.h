@@ -36,4 +36,5 @@ Scene *initScene(unsigned int size, Camera *cam);
 unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
                             unsigned int meshID);
 void removeSceneObject(Scene scene, unsigned int objID);
+void deleteScene(Scene *scene);
 #endif

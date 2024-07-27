@@ -10,8 +10,13 @@ Camera *initCamera(vec3 pos, vec3 target, float fov) {
 
   return cam;
 }
+void deleteCamera(Camera *cam) { free(cam); }
 
-void lookAt(vec3 camPos, vec3 target, vec3 up, mat4 view) {
+void lookAt(Camera *cam, vec3 up, mat4 view) {
+  vec3 camPos;
+  copyVec3(cam->position, camPos);
+  vec3 target;
+  copyVec3(cam->target, target);
   vec3 zaxis;
   vec3 xaxis;
   vec3 yaxis;
@@ -39,4 +44,10 @@ void lookAt(vec3 camPos, vec3 target, vec3 up, mat4 view) {
   }
 
   multiplyMats4(left, right, view);
+}
+
+void camMove(Camera *cam, vec3 newPos) { copyVec3(newPos, cam->position); }
+
+void camTargetUpdate(Camera *cam, vec3 newTarget) {
+  copyVec3(newTarget, cam->target);
 }

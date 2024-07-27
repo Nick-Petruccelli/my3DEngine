@@ -10,7 +10,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-SceneObjects sceneObjects;
 unsigned int nextObjID;
 unsigned int VBO, VAO;
 
@@ -61,41 +60,10 @@ int initEngine() {
 
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
-  sceneObjects.objects = malloc(sizeof(Object) * 100);
-  if (sceneObjects.objects == NULL) {
-    printf("ERROR::SCENEINIT::SCENEOBJECTS\nfailed to allocate memory for "
-           "scene objects\n.");
-    return -1;
-  }
-  sceneObjects.size = 100;
-  sceneObjects.numObjects = 0;
 
   return 0;
 }
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
   glViewport(0, 0, width, height);
-}
-
-void translateObject(unsigned int objID, vec3 translate) {
-  for (int i = 0; i < 3; i++) {
-    sceneObjects.objects[objID].position[i] += translate[i];
-  }
-}
-void rotateObject(unsigned int objID, vec3 rotation) {
-  for (int i = 0; i < 3; i++) {
-    sceneObjects.objects[objID].rotation[i] += rotation[i];
-    int overRot = floorf(sceneObjects.objects[objID].rotation[i] / 360);
-    if (overRot >= 1) {
-      sceneObjects.objects[objID].rotation[i] -= overRot;
-    }
-    if (overRot + 1 <= -1) {
-      sceneObjects.objects[objID].rotation[i] += overRot;
-    }
-  }
-}
-void scaleObject(unsigned int objID, vec3 scale) {
-  for (int i = 0; i < 3; i++) {
-    sceneObjects.objects[objID].scale[i] *= scale[i];
-  }
 }

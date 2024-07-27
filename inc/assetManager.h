@@ -25,6 +25,7 @@ typedef struct MeshInfoArray {
 extern MeshInfoArray MIA;
 
 void initAssetManager(unsigned int numMeshes);
+void deleteAssetManager();
 int addAsset(float *assetData, unsigned int assetVerts, GLenum usage);
 
 float *loadPlaneData();

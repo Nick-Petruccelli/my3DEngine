@@ -1,5 +1,5 @@
-CC=gcc
-CFLAGS=-lGL -lglfw -lm
+CC=clang
+CFLAGS=-lGL -lglfw -lm 
 SRC=src
 OBJ=obj
 SRCS=$(wildcard $(SRC)/*.c)

@@ -8,6 +8,7 @@
 #include "../inc/shaders.h"
 #include "../inc/textures.h"
 #include <GLFW/glfw3.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -75,6 +76,11 @@ int main() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // move Camera
+    camPos[0] = sinf(glfwGetTime()) * 10;
+    camPos[2] = cosf(glfwGetTime()) * 10;
+    camMove(cam, camPos);
+
     // draw triangles
     glBindTexture(GL_TEXTURE_2D, texture);
     render(mainScene, shaderProgram);
@@ -82,6 +88,8 @@ int main() {
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
+  deleteScene(mainScene);
+  deleteAssetManager();
   glfwTerminate();
 
   return 0;

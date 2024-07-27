@@ -13,6 +13,8 @@ void initAssetManager(unsigned int numMeshes) {
   MIA.size = numMeshes;
 }
 
+void deleteAssetManager() { free(MIA.meshInfo); }
+
 int addAsset(float *assetData, unsigned int assetVerts, GLenum usage) {
   if (MIA.len > MIA.size) {
     MeshInfo *temp = realloc(MIA.meshInfo, MIA.size * 2 * sizeof(float));

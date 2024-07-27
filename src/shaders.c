@@ -12,7 +12,7 @@ char *loadShaderSource(char *path) {
   fseek(fp, 0, SEEK_END);
   int len = ftell(fp);
   rewind(fp);
-  char *out = malloc(len);
+  char *out = malloc(sizeof(char) * len + 1);
   if (out) {
     fread(out, 1, len, fp);
   }

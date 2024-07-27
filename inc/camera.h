@@ -10,6 +10,9 @@ typedef struct Camera {
 } Camera;
 
 Camera *initCamera(vec3 pos, vec3 target, float fov);
+void deleteCamera(Camera *cam);
 
-void lookAt(vec3 camPos, vec3 target, vec3 up, mat4 view);
+void lookAt(Camera *cam, vec3 up, mat4 view);
+void camMove(Camera *cam, vec3 newPos);
+void camTargetUpdate(Camera *cam, vec3 newTarget);
 #endif

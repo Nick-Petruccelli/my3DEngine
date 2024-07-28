@@ -54,7 +54,7 @@ int main() {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   // create texture object
-  unsigned int texture = generateTexture("box.png");
+  //  unsigned int texture = generateTexture("box.png");
 
   // create list of verticies to render
   float *cubeData = loadCubeData();
@@ -65,7 +65,7 @@ int main() {
   Camera *cam = initCamera(camPos, origin, 45);
   Scene *mainScene = initScene(10, cam);
   int cubeMeshID = addAsset(cubeData, 36, GL_STATIC_DRAW);
-  vec3 cubePos = {1, 0, 3};
+  vec3 cubePos = {1, 0, -3};
   vec3 cubeRot = {1.2, 3.2, .43};
   vec3 cubeScale = {1, 1, 1};
   addSceneObject(mainScene, cubePos, cubeRot, cubeScale, cubeMeshID);
@@ -81,7 +81,7 @@ int main() {
   glEnable(GL_DEPTH_TEST);
 
   while (!glfwWindowShouldClose(window)) {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // move Camera
@@ -90,7 +90,7 @@ int main() {
     camMove(cam, camPos);
 
     // draw triangles
-    glBindTexture(GL_TEXTURE_2D, texture);
+    //   glBindTexture(GL_TEXTURE_2D, texture);
     render(mainScene, objShader, lightShader);
 
     glfwSwapBuffers(window);

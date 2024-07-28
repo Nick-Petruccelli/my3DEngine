@@ -1,14 +1,16 @@
 #version 330 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aTexCord;
+layout (location = 1) in vec3 aNorm;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 proj;
 
-out vec2 texCord;
+out vec3 normal;
+out vec3 fragPos;
 void main()
 {
+    normal = aNorm;
+    fragPos = vec3(model * vec4(aPos, 1.0));
     gl_Position = proj * view * model * vec4(aPos.x, aPos.y, aPos.z, 1.0);
-    texCord = aTexCord;
 }

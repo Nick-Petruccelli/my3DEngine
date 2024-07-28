@@ -21,6 +21,9 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
   glUniformMatrix4fv(projLoc, 1, GL_FALSE, projOut);
   int objModelLoc = glGetUniformLocation(objShader, "model");
 
+  int lightPosLoc = glGetUniformLocation(objShader, "lightPos");
+  glUniform3fv(lightPosLoc, 1, scene->sceneLights[0].position);
+
   for (int i = 0; i < scene->numObjects; i++) {
     SceneObject obj = scene->sceneObjects[i];
     unsigned int meshID = obj.meshID;

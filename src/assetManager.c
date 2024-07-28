@@ -6,11 +6,17 @@
 #include <stdlib.h>
 
 MeshInfoArray MIA;
+unsigned int lightVAO;
 
 void initAssetManager(unsigned int numMeshes) {
   MIA.meshInfo = malloc(sizeof(MeshInfo) * numMeshes);
   MIA.len = 0;
   MIA.size = numMeshes;
+  glGenVertexArrays(1, &lightVAO);
+  glBindVertexArray(lightVAO);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+  glEnableVertexAttribArray(0);
+  glBindVertexArray(0);
 }
 
 void deleteAssetManager() { free(MIA.meshInfo); }

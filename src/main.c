@@ -42,8 +42,10 @@ int main() {
   glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
   // create shader program
-  unsigned int shaderProgram =
-      createShader("./src/shaders/vertex.glsl", "./src/shaders/fragment.glsl");
+  unsigned int objShader =
+      createShader("./src/shaders/vertex.glsl", "./src/shaders/objFrag.glsl");
+  unsigned int lightShader =
+      createShader("./src/shaders/vertex.glsl", "./src/shaders/lightFrag.glsl");
 
   // set the texture wrapping parameters
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -55,19 +57,25 @@ int main() {
   unsigned int texture = generateTexture("box.png");
 
   // create list of verticies to render
-  float *verts1 = loadCubeData();
-  float *verts2 = loadPlaneData();
+  float *cubeData = loadCubeData();
 
   initAssetManager(2);
   vec3 camPos = {0, 0, 10};
   vec3 origin = {0, 0, 0};
   Camera *cam = initCamera(camPos, origin, 45);
   Scene *mainScene = initScene(10, cam);
-  int cubeMeshID = addAsset(verts1, 36, GL_STATIC_DRAW);
+  int cubeMeshID = addAsset(cubeData, 36, GL_STATIC_DRAW);
   vec3 cubePos = {1, 0, 3};
   vec3 cubeRot = {1.2, 3.2, .43};
   vec3 cubeScale = {1, 1, 1};
   addSceneObject(mainScene, cubePos, cubeRot, cubeScale, cubeMeshID);
+
+  vec3 lightColor = {1, 1, 1};
+  vec3 lightPos = {0, 2, 0};
+  vec3 lightRot = {1.2, 3.2, .43};
+  vec3 lightScale = {.2, .2, .2};
+  addSceneLight(mainScene, lightColor, lightPos, lightRot, lightScale,
+                cubeMeshID);
 
   // render loop
   glEnable(GL_DEPTH_TEST);
@@ -83,7 +91,7 @@ int main() {
 
     // draw triangles
     glBindTexture(GL_TEXTURE_2D, texture);
-    render(mainScene, shaderProgram);
+    render(mainScene, objShader, lightShader);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

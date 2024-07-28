@@ -3,4 +3,4 @@
 #endif
 #include "sceneManager.h"
 
-void render(Scene *scene, unsigned int shaderProgram);
+void render(Scene *scene, unsigned int objShader, unsigned int lightShader);

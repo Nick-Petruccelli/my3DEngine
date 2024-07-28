@@ -1,4 +1,4 @@
-CC=clang
+CC=gcc
 CFLAGS=-lGL -lglfw -lm 
 SRC=src
 OBJ=obj

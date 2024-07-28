@@ -23,6 +23,7 @@ typedef struct MeshInfoArray {
 } MeshInfoArray;
 
 extern MeshInfoArray MIA;
+extern unsigned int lightVAO;
 
 void initAssetManager(unsigned int numMeshes);
 void deleteAssetManager();

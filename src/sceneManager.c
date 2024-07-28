@@ -93,16 +93,23 @@ Scene *initScene(unsigned int size, Camera *cam) {
   scene->sceneObjects = malloc(size * sizeof(SceneObject));
   scene->numObjects = 0;
   scene->sceneObjectsSize = size;
-  scene->nextIDQueue = createQueue(100);
+  scene->nextObjID = createQueue(100);
+  scene->sceneLights = malloc(size * sizeof(SceneLight));
+  scene->numLights = 0;
+  scene->sceneLightsSize = size;
+  scene->nextLightID = createQueue(10);
   scene->camera = cam;
 
   return scene;
 }
 
 void deleteScene(Scene *scene) {
-  free(scene->nextIDQueue->queue);
-  free(scene->nextIDQueue);
+  free(scene->nextObjID->queue);
+  free(scene->nextObjID);
   free(scene->sceneObjects);
+  free(scene->nextLightID->queue);
+  free(scene->nextLightID);
+  free(scene->sceneLights);
   free(scene->camera);
   free(scene);
 }
@@ -114,17 +121,15 @@ unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
   copyVec3(rot, obj.rotation);
   copyVec3(scale, obj.scale);
   obj.meshID = meshID;
-  if (scene->nextIDQueue->len == 0) {
+  if (scene->nextObjID->len == 0) {
     obj.objID = scene->numObjects;
     scene->sceneObjects[obj.objID] = obj;
     scene->numObjects++;
   } else {
-    obj.objID = queuePop(scene->nextIDQueue);
+    obj.objID = queuePop(scene->nextObjID);
     scene->sceneObjects[obj.objID] = obj;
     scene->numObjects++;
   }
-  printf("SceneObjectSize: %d\nObjID: %d\n", scene->sceneObjectsSize,
-         obj.objID);
 
   return obj.objID;
 }
@@ -132,7 +137,37 @@ unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
 void removeSceneObject(Scene scene, unsigned int objID) {
   // Set this objects objID at objID to max value so we can check it on render
   scene.sceneObjects[objID].objID = UINT_MAX;
-  int e = queuePush(scene.nextIDQueue, objID);
+  int e = queuePush(scene.nextObjID, objID);
+  if (e < 0) {
+    printf("ERROR::SCNENEMANAGER::REMOVESCENEOBJECT\nFailed queuePush.\n");
+  }
+}
+
+unsigned int addSceneLight(Scene *scene, vec3 color, vec3 pos, vec3 rot,
+                           vec3 scale, unsigned int meshID) {
+  SceneLight light;
+  copyVec3(color, light.color);
+  copyVec3(pos, light.position);
+  copyVec3(rot, light.rotation);
+  copyVec3(scale, light.scale);
+  light.meshID = meshID;
+  if (scene->nextLightID->len == 0) {
+    light.lightID = scene->numLights;
+    scene->sceneLights[light.lightID] = light;
+    scene->numLights++;
+  } else {
+    light.lightID = queuePop(scene->nextLightID);
+    scene->sceneLights[light.lightID] = light;
+    scene->numLights++;
+  }
+
+  return light.lightID;
+}
+
+void removeSceneLight(Scene scene, unsigned int lightID) {
+  // Set this objects objID at objID to max value so we can check it on render
+  scene.sceneLights[lightID].lightID = UINT_MAX;
+  int e = queuePush(scene.nextLightID, lightID);
   if (e < 0) {
     printf("ERROR::SCNENEMANAGER::REMOVESCENEOBJECT\nFailed queuePush.\n");
   }

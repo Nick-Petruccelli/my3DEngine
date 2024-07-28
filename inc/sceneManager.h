@@ -12,6 +12,15 @@ typedef struct SceneObject {
   unsigned int meshID;
 } SceneObject;
 
+typedef struct SceneLight {
+  unsigned int lightID;
+  vec3 color;
+  vec3 position;
+  vec3 rotation;
+  vec3 scale;
+  unsigned int meshID;
+} SceneLight;
+
 typedef struct IDQueue {
   unsigned int head;
   unsigned int tail;
@@ -24,7 +33,11 @@ typedef struct Scene {
   SceneObject *sceneObjects;
   unsigned int numObjects;
   unsigned int sceneObjectsSize;
-  IDQueue *nextIDQueue;
+  IDQueue *nextObjID;
+  SceneLight *sceneLights;
+  unsigned int numLights;
+  unsigned int sceneLightsSize;
+  IDQueue *nextLightID;
   Camera *camera;
 } Scene;
 
@@ -36,5 +49,8 @@ Scene *initScene(unsigned int size, Camera *cam);
 unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
                             unsigned int meshID);
 void removeSceneObject(Scene scene, unsigned int objID);
+unsigned int addSceneLight(Scene *scene, vec3 color, vec3 pos, vec3 rot,
+                           vec3 scale, unsigned int meshID);
+void removeSceneLight(Scene scene, unsigned int lightID);
 void deleteScene(Scene *scene);
 #endif

@@ -10,7 +10,7 @@ void main(){
     vec3 lightColor = vec3(1.0);
     vec3 ambient = 0.1 * lightColor;
     vec3 norm = normalize(normal);
-    vec3 lightDir = normalize(fragPos - lightPos);
+    vec3 lightDir = normalize(lightPos - fragPos);
     float diff = max(dot(norm, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
     vec3 sum = (ambient + diffuse) * objColor;

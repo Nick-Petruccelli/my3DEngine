@@ -50,7 +50,7 @@ int addAsset(float *assetData, unsigned int assetVerts, GLenum usage) {
   MeshInfo *meshInfo = &MIA.meshInfo[MIA.len];
   meshInfo->vao = VAO;
   meshInfo->vbo = VBO;
-  meshInfo->numVerts = size / 5;
+  meshInfo->numVerts = size / 6;
   meshInfo->meshID = MIA.len;
   MIA.len++;
 

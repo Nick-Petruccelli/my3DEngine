@@ -85,11 +85,11 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // move Light
-    // mainScene->sceneLights[0].position[1] = 5 * cosf(glfwGetTime());
+    mainScene->sceneLights[0].position[1] = 5 * cosf(glfwGetTime());
     // move Camera
     camPos[0] = sinf(glfwGetTime()) * 10;
     camPos[2] = cosf(glfwGetTime()) * 10;
-    // camMove(cam, camPos);
+    camMove(cam, camPos);
 
     // draw triangles
     //   glBindTexture(GL_TEXTURE_2D, texture);

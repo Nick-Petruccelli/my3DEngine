@@ -4,6 +4,13 @@
 #include "../inc/sceneManager.h"
 #include <stdio.h>
 
+typedef struct Material {
+  vec3 ambient;
+  vec3 diffuse;
+  vec3 specular;
+  float shininess;
+} Material;
+
 void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
   mat4 view;
   mat4 proj;
@@ -24,6 +31,27 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
   int lightPosLoc = glGetUniformLocation(objShader, "lightPos");
   glUniform3fv(lightPosLoc, 1, scene->sceneLights[0].position);
 
+  Material cubeMaterial;
+  vec3 ambient = {1.0, 0.5, 0.31};
+  copyVec3(ambient, cubeMaterial.ambient);
+  vec3 diffuse = {1.0, 0.5, 0.31};
+  copyVec3(diffuse, cubeMaterial.diffuse);
+  vec3 specular = {1.0, 0.5, 0.31};
+  copyVec3(specular, cubeMaterial.specular);
+  cubeMaterial.shininess = 32;
+
+  int ambientLoc = glGetUniformLocation(objShader, "material.ambient");
+  int diffLoc = glGetUniformLocation(objShader, "material.diffuse");
+  int specLoc = glGetUniformLocation(objShader, "material.specular");
+  int shinnyLoc = glGetUniformLocation(objShader, "material.shininess");
+
+  int lightALoc = glGetUniformLocation(objShader, "light.ambient");
+  int lightDLoc = glGetUniformLocation(objShader, "light.diffuse");
+  int lightSLoc = glGetUniformLocation(objShader, "light.specular");
+  vec3 lightAmbi = {.2, .2, .2};
+  vec3 lightDiff = {.5, .5, .5};
+  vec3 lightSpec = {1.0, 1.0, 1.0};
+
   for (int i = 0; i < scene->numObjects; i++) {
     SceneObject obj = scene->sceneObjects[i];
     unsigned int meshID = obj.meshID;
@@ -36,6 +64,18 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
     free(modelOut);
 
     MeshInfo meshInfo = MIA.meshInfo[meshID];
+
+    // temporary
+    // set Material uniform
+    glUniform3fv(ambientLoc, 1, cubeMaterial.ambient);
+    glUniform3fv(diffLoc, 1, cubeMaterial.diffuse);
+    glUniform3fv(specLoc, 1, cubeMaterial.specular);
+    glUniform1f(shinnyLoc, cubeMaterial.shininess);
+
+    glUniform3fv(lightALoc, 1, lightAmbi);
+    glUniform3fv(lightDLoc, 1, lightDiff);
+    glUniform3fv(lightSLoc, 1, lightSpec);
+    glUniform1f(shinnyLoc, cubeMaterial.shininess);
 
     glBindVertexArray(meshInfo.vao);
     glBindBuffer(GL_ARRAY_BUFFER, meshInfo.vbo);

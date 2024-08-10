@@ -115,12 +115,16 @@ void deleteScene(Scene *scene) {
 }
 
 unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
-                            unsigned int meshID) {
+                            unsigned int meshID, Material material) {
   SceneObject obj;
   copyVec3(pos, obj.position);
   copyVec3(rot, obj.rotation);
   copyVec3(scale, obj.scale);
   obj.meshID = meshID;
+  obj.material.diffMap = material.diffMap;
+  obj.material.specMap = material.specMap;
+  obj.material.shininess = material.shininess;
+
   if (scene->nextObjID->len == 0) {
     obj.objID = scene->numObjects;
     scene->sceneObjects[obj.objID] = obj;

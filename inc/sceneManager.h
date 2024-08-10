@@ -1,6 +1,7 @@
 #ifndef SCENEMANAGER_H
 #define SCENEMANAGER_H
 
+#include "assetManager.h"
 #include "camera.h"
 #include "glMath.h"
 
@@ -10,6 +11,7 @@ typedef struct SceneObject {
   vec3 rotation;
   vec3 scale;
   unsigned int meshID;
+  Material material;
 } SceneObject;
 
 typedef struct SceneLight {
@@ -47,7 +49,7 @@ int queuePush(IDQueue *q, unsigned int num);
 unsigned int queuePop(IDQueue *q);
 Scene *initScene(unsigned int size, Camera *cam);
 unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
-                            unsigned int meshID);
+                            unsigned int meshID, Material materialID);
 void removeSceneObject(Scene scene, unsigned int objID);
 unsigned int addSceneLight(Scene *scene, vec3 color, vec3 pos, vec3 rot,
                            vec3 scale, unsigned int meshID);

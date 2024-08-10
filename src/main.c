@@ -65,13 +65,18 @@ int main() {
   Camera *cam = initCamera(camPos, origin, 45);
   Scene *mainScene = initScene(10, cam);
   int cubeMeshID = addAsset(cubeData, 36, GL_STATIC_DRAW);
-  vec3 cubePos = {-1, 0, 0};
-  vec3 cubeRot = {0, -0.3, 0};
+  vec3 cubePos = {-1, 0, -4};
+  vec3 cubeRot = {0, .3, 0};
   vec3 cubeScale = {1, 1, 1};
-  addSceneObject(mainScene, cubePos, cubeRot, cubeScale, cubeMeshID);
+  Material cubeMaterial;
+  cubeMaterial.diffMap = generateTexture("container2.png");
+  cubeMaterial.specMap = generateTexture("container2_specular.png");
+  cubeMaterial.shininess = 32;
+  addSceneObject(mainScene, cubePos, cubeRot, cubeScale, cubeMeshID,
+                 cubeMaterial);
 
   vec3 lightColor = {1, 1, 1};
-  vec3 lightPos = {3.0f, 3.0f, -3.0f};
+  vec3 lightPos = {0.0f, 1.0f, 0.0f};
   vec3 lightRot = {1.2, 3.2, .43};
   vec3 lightScale = {.2, .2, .2};
   addSceneLight(mainScene, lightColor, lightPos, lightRot, lightScale,
@@ -85,7 +90,7 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // move Light
-    mainScene->sceneLights[0].position[1] += .25 * cosf(glfwGetTime());
+    mainScene->sceneLights[0].position[1] = (.5 * cosf(glfwGetTime())) + 1;
     // move Camera
     camPos[0] = sinf(glfwGetTime()) * 20;
     camPos[2] = cosf(glfwGetTime()) * 20;

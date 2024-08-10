@@ -5,13 +5,6 @@
 #include "../inc/textures.h"
 #include <stdio.h>
 
-typedef struct Material {
-  vec3 ambient;
-  unsigned int diffMap;
-  unsigned int specMap;
-  float shininess;
-} Material;
-
 void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
   mat4 view;
   mat4 proj;
@@ -31,13 +24,6 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
 
   int lightPosLoc = glGetUniformLocation(objShader, "lightPos");
   glUniform3fv(lightPosLoc, 1, scene->sceneLights[0].position);
-
-  Material cubeMaterial;
-  vec3 ambient = {1.0, 0.5, 0.31};
-  copyVec3(ambient, cubeMaterial.ambient);
-  cubeMaterial.diffMap = generateTexture("container2.png");
-  cubeMaterial.specMap = generateTexture("container2_specular.png");
-  cubeMaterial.shininess = 32;
 
   int ambientLoc = glGetUniformLocation(objShader, "material.ambient");
   int diffLoc = glGetUniformLocation(objShader, "material.diffuse");
@@ -66,20 +52,19 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
 
     // temporary
     // set Material uniform
-    glUniform3fv(ambientLoc, 1, cubeMaterial.ambient);
     glUniform1i(diffLoc, 0);
     glUniform1i(specLoc, 1);
-    glUniform1f(shinnyLoc, cubeMaterial.shininess);
+    glUniform1f(shinnyLoc, obj.material.shininess);
 
     glUniform3fv(lightALoc, 1, lightAmbi);
     glUniform3fv(lightDLoc, 1, lightDiff);
     glUniform3fv(lightSLoc, 1, lightSpec);
-    glUniform1f(shinnyLoc, cubeMaterial.shininess);
+    glUniform1f(shinnyLoc, obj.material.shininess);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, cubeMaterial.diffMap);
+    glBindTexture(GL_TEXTURE_2D, obj.material.diffMap);
     glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, cubeMaterial.specMap);
+    glBindTexture(GL_TEXTURE_2D, obj.material.specMap);
     glBindVertexArray(meshInfo.vao);
     glBindBuffer(GL_ARRAY_BUFFER, meshInfo.vbo);
     glDrawArrays(GL_TRIANGLES, 0, meshInfo.numVerts);

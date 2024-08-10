@@ -2,11 +2,12 @@
 #include "../inc/camera.h"
 #include "../inc/glad.h"
 #include "../inc/sceneManager.h"
+#include "../inc/textures.h"
 #include <stdio.h>
 
 typedef struct Material {
   vec3 ambient;
-  vec3 diffuse;
+  unsigned int diffMap;
   vec3 specular;
   float shininess;
 } Material;
@@ -34,9 +35,8 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
   Material cubeMaterial;
   vec3 ambient = {1.0, 0.5, 0.31};
   copyVec3(ambient, cubeMaterial.ambient);
-  vec3 diffuse = {1.0, 0.5, 0.31};
-  copyVec3(diffuse, cubeMaterial.diffuse);
-  vec3 specular = {1.0, 0.5, 0.31};
+  cubeMaterial.diffMap = generateTexture("container2.png");
+  vec3 specular = {1.0, 1.0, 1.0};
   copyVec3(specular, cubeMaterial.specular);
   cubeMaterial.shininess = 32;
 
@@ -68,7 +68,7 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
     // temporary
     // set Material uniform
     glUniform3fv(ambientLoc, 1, cubeMaterial.ambient);
-    glUniform3fv(diffLoc, 1, cubeMaterial.diffuse);
+    glUniform1i(diffLoc, 0);
     glUniform3fv(specLoc, 1, cubeMaterial.specular);
     glUniform1f(shinnyLoc, cubeMaterial.shininess);
 
@@ -77,6 +77,8 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
     glUniform3fv(lightSLoc, 1, lightSpec);
     glUniform1f(shinnyLoc, cubeMaterial.shininess);
 
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, cubeMaterial.diffMap);
     glBindVertexArray(meshInfo.vao);
     glBindBuffer(GL_ARRAY_BUFFER, meshInfo.vbo);
     glDrawArrays(GL_TRIANGLES, 0, meshInfo.numVerts);

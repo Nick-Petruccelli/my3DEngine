@@ -60,18 +60,18 @@ int main() {
   float *cubeData = loadCubeData();
 
   initAssetManager(2);
-  vec3 camPos = {0, 1, 10};
+  vec3 camPos = {0, -1, 5};
   vec3 origin = {0, 0, 0};
   Camera *cam = initCamera(camPos, origin, 45);
   Scene *mainScene = initScene(10, cam);
   int cubeMeshID = addAsset(cubeData, 36, GL_STATIC_DRAW);
-  vec3 cubePos = {0, 0, 5};
-  vec3 cubeRot = {0, .33, 0.1};
+  vec3 cubePos = {-1, 0, 0};
+  vec3 cubeRot = {0, -0.3, 0};
   vec3 cubeScale = {1, 1, 1};
   addSceneObject(mainScene, cubePos, cubeRot, cubeScale, cubeMeshID);
 
   vec3 lightColor = {1, 1, 1};
-  vec3 lightPos = {0, 1, 0};
+  vec3 lightPos = {3.0f, 3.0f, -3.0f};
   vec3 lightRot = {1.2, 3.2, .43};
   vec3 lightScale = {.2, .2, .2};
   addSceneLight(mainScene, lightColor, lightPos, lightRot, lightScale,
@@ -85,11 +85,11 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // move Light
-    mainScene->sceneLights[0].position[1] = 5 * cosf(glfwGetTime());
+    mainScene->sceneLights[0].position[1] += .25 * cosf(glfwGetTime());
     // move Camera
-    camPos[0] = sinf(glfwGetTime()) * 10;
-    camPos[2] = cosf(glfwGetTime()) * 10;
-    camMove(cam, camPos);
+    camPos[0] = sinf(glfwGetTime()) * 20;
+    camPos[2] = cosf(glfwGetTime()) * 20;
+    //    camMove(cam, camPos);
 
     // draw triangles
     //   glBindTexture(GL_TEXTURE_2D, texture);

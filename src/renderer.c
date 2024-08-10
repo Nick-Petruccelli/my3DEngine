@@ -8,7 +8,7 @@
 typedef struct Material {
   vec3 ambient;
   unsigned int diffMap;
-  vec3 specular;
+  unsigned int specMap;
   float shininess;
 } Material;
 
@@ -36,8 +36,7 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
   vec3 ambient = {1.0, 0.5, 0.31};
   copyVec3(ambient, cubeMaterial.ambient);
   cubeMaterial.diffMap = generateTexture("container2.png");
-  vec3 specular = {1.0, 1.0, 1.0};
-  copyVec3(specular, cubeMaterial.specular);
+  cubeMaterial.specMap = generateTexture("container2_specular.png");
   cubeMaterial.shininess = 32;
 
   int ambientLoc = glGetUniformLocation(objShader, "material.ambient");
@@ -69,7 +68,7 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
     // set Material uniform
     glUniform3fv(ambientLoc, 1, cubeMaterial.ambient);
     glUniform1i(diffLoc, 0);
-    glUniform3fv(specLoc, 1, cubeMaterial.specular);
+    glUniform1i(specLoc, 1);
     glUniform1f(shinnyLoc, cubeMaterial.shininess);
 
     glUniform3fv(lightALoc, 1, lightAmbi);
@@ -79,6 +78,8 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeMaterial.diffMap);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, cubeMaterial.specMap);
     glBindVertexArray(meshInfo.vao);
     glBindBuffer(GL_ARRAY_BUFFER, meshInfo.vbo);
     glDrawArrays(GL_TRIANGLES, 0, meshInfo.numVerts);

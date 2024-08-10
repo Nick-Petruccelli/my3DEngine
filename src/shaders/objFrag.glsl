@@ -6,7 +6,7 @@ in vec2 TexCords;
 
 struct Material {
     sampler2D diffuse;
-    vec3 specular;
+    sampler2D specular;
     float shininess;
 };
 struct Light {
@@ -30,7 +30,7 @@ void main(){
     vec3 viewDir = normalize(-fragPos);
     vec3 lightRef = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, lightRef), 0.0), 128);
-    vec3 specular = (material.specular * spec) * light.specular;
+    vec3 specular = (vec3(texture(material.specular, TexCords)) * spec) * light.specular;
 
     vec3 sum = ambient + diffuse + specular;
     FragColor = vec4(sum, 1.0); 

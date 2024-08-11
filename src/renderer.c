@@ -33,9 +33,17 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
   int lightALoc = glGetUniformLocation(objShader, "light.ambient");
   int lightDLoc = glGetUniformLocation(objShader, "light.diffuse");
   int lightSLoc = glGetUniformLocation(objShader, "light.specular");
+  int lightConstLoc = glGetUniformLocation(objShader, "light.constant");
+  int lightLinLoc = glGetUniformLocation(objShader, "light.linear");
+  int lightQuadLoc = glGetUniformLocation(objShader, "light.quadradic");
+
   vec3 lightAmbi = {.2, .2, .2};
   vec3 lightDiff = {.5, .5, .5};
   vec3 lightSpec = {1.0, 1.0, 1.0};
+
+  float lightConst = 1.0f;
+  float lightLin = 0.09f;
+  float lightQuad = 0.032f;
 
   for (int i = 0; i < scene->numObjects; i++) {
     SceneObject obj = scene->sceneObjects[i];
@@ -59,6 +67,9 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
     glUniform3fv(lightALoc, 1, lightAmbi);
     glUniform3fv(lightDLoc, 1, lightDiff);
     glUniform3fv(lightSLoc, 1, lightSpec);
+    glUniform1f(lightConstLoc, lightConst);
+    glUniform1f(lightLinLoc, lightLin);
+    glUniform1f(lightQuadLoc, lightQuad);
     glUniform1f(shinnyLoc, obj.material.shininess);
 
     glActiveTexture(GL_TEXTURE0);

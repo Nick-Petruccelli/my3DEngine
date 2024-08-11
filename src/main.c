@@ -91,6 +91,7 @@ int main() {
 
     // move Light
     mainScene->sceneLights[0].position[1] = (.5 * cosf(glfwGetTime())) + 1;
+    mainScene->sceneObjects[0].position[2] -= .01;
     // move Camera
     camPos[0] = sinf(glfwGetTime()) * 20;
     camPos[2] = cosf(glfwGetTime()) * 20;

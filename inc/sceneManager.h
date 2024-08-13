@@ -4,6 +4,7 @@
 #include "assetManager.h"
 #include "camera.h"
 #include "glMath.h"
+#include "lighting.h"
 
 typedef struct SceneObject {
   unsigned int objID;
@@ -14,6 +15,8 @@ typedef struct SceneObject {
   Material material;
 } SceneObject;
 
+typedef enum LightType { DIR_LIGHT, POINT_LIGHT, SPOT_LIGHT } LightType;
+
 typedef struct SceneLight {
   unsigned int lightID;
   vec3 color;
@@ -21,6 +24,9 @@ typedef struct SceneLight {
   vec3 rotation;
   vec3 scale;
   unsigned int meshID;
+
+  LightType lightType;
+  void *lightStruct;
 } SceneLight;
 
 typedef struct IDQueue {
@@ -51,8 +57,8 @@ Scene *initScene(unsigned int size, Camera *cam);
 unsigned int addSceneObject(Scene *scene, vec3 pos, vec3 rot, vec3 scale,
                             unsigned int meshID, Material materialID);
 void removeSceneObject(Scene scene, unsigned int objID);
-unsigned int addSceneLight(Scene *scene, vec3 color, vec3 pos, vec3 rot,
-                           vec3 scale, unsigned int meshID);
+unsigned int addPointLight(Scene *scene, PointLight *lightStruct, vec3 color,
+                           vec3 pos, vec3 rot, vec3 scale, unsigned int meshID);
 void removeSceneLight(Scene scene, unsigned int lightID);
 void deleteScene(Scene *scene);
 #endif

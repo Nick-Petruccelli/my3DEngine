@@ -1,4 +1,5 @@
 #include "../inc/shaders.h"
+#include "../inc/glMath.h"
 #include "../inc/glad.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -68,4 +69,17 @@ unsigned int createShader(char *vertexPath, char *fragmentPath) {
       compileShader(loadShaderSource(fragmentPath), GL_FRAGMENT_SHADER);
 
   return linkShaders(vertexShader, fragmentShader);
+}
+
+void setUniform3fv(unsigned int shader, char *name, vec3 value) {
+  unsigned int loc = glGetUniformLocation(shader, name);
+  glUniform3fv(loc, 1, value);
+}
+void setUniform1f(unsigned int shader, char *name, float value) {
+  unsigned int loc = glGetUniformLocation(shader, name);
+  glUniform1f(loc, value);
+}
+void setUniform1i(unsigned int shader, char *name, int value) {
+  unsigned int loc = glGetUniformLocation(shader, name);
+  glUniform1i(loc, value);
 }

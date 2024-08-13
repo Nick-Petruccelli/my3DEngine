@@ -1,9 +1,13 @@
 #include "../inc/assetManager.h"
 #include "../inc/camera.h"
 #include "../inc/glad.h"
+#include "../inc/lighting.h"
 #include "../inc/sceneManager.h"
+#include "../inc/shaders.h"
 #include "../inc/textures.h"
 #include <stdio.h>
+
+void setLightUniforms(Scene *scene, unsigned int objShader);
 
 void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
   mat4 view;
@@ -30,20 +34,7 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
   int specLoc = glGetUniformLocation(objShader, "material.specular");
   int shinnyLoc = glGetUniformLocation(objShader, "material.shininess");
 
-  int lightALoc = glGetUniformLocation(objShader, "light.ambient");
-  int lightDLoc = glGetUniformLocation(objShader, "light.diffuse");
-  int lightSLoc = glGetUniformLocation(objShader, "light.specular");
-  int lightConstLoc = glGetUniformLocation(objShader, "light.constant");
-  int lightLinLoc = glGetUniformLocation(objShader, "light.linear");
-  int lightQuadLoc = glGetUniformLocation(objShader, "light.quadradic");
-
-  vec3 lightAmbi = {.2, .2, .2};
-  vec3 lightDiff = {.5, .5, .5};
-  vec3 lightSpec = {1.0, 1.0, 1.0};
-
-  float lightConst = 1.0f;
-  float lightLin = 0.09f;
-  float lightQuad = 0.032f;
+  setLightUniforms(scene, objShader);
 
   for (int i = 0; i < scene->numObjects; i++) {
     SceneObject obj = scene->sceneObjects[i];
@@ -62,14 +53,6 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
     // set Material uniform
     glUniform1i(diffLoc, 0);
     glUniform1i(specLoc, 1);
-    glUniform1f(shinnyLoc, obj.material.shininess);
-
-    glUniform3fv(lightALoc, 1, lightAmbi);
-    glUniform3fv(lightDLoc, 1, lightDiff);
-    glUniform3fv(lightSLoc, 1, lightSpec);
-    glUniform1f(lightConstLoc, lightConst);
-    glUniform1f(lightLinLoc, lightLin);
-    glUniform1f(lightQuadLoc, lightQuad);
     glUniform1f(shinnyLoc, obj.material.shininess);
 
     glActiveTexture(GL_TEXTURE0);
@@ -107,4 +90,105 @@ void render(Scene *scene, unsigned int objShader, unsigned int lightShader) {
     glBindBuffer(GL_ARRAY_BUFFER, meshInfo.vbo);
     glDrawArrays(GL_TRIANGLES, 0, meshInfo.numVerts);
   }
+}
+
+void setLightUniforms(Scene *scene, unsigned int objShader) {
+  int numDirLights = 0;
+  int numPointLights = 0;
+  int numSpotLights = 0;
+  for (int i = 0; i < scene->numLights; i++) {
+    SceneLight light = scene->sceneLights[i];
+    switch (light.lightType) {
+    case DIR_LIGHT: {
+      DirLight *dirLight = (DirLight *)light.lightStruct;
+      char dirName[50];
+      sprintf(dirName, "dirLights[%d].direction", numDirLights);
+      setUniform3fv(objShader, dirName, dirLight->direction);
+
+      char ambName[50];
+      sprintf(ambName, "dirLights[%d].ambient", numDirLights);
+      setUniform3fv(objShader, ambName, dirLight->ambient);
+
+      char diffName[50];
+      sprintf(diffName, "dirLights[%d].diffuse", numDirLights);
+      setUniform3fv(objShader, diffName, dirLight->diffuse);
+
+      char specName[50];
+      sprintf(specName, "dirLights[%d].specular", numDirLights);
+      setUniform3fv(objShader, specName, dirLight->specular);
+
+      numDirLights++;
+      break;
+    }
+    case POINT_LIGHT: {
+      PointLight *pointLight = (PointLight *)light.lightStruct;
+      char posName[50];
+      sprintf(posName, "pointLights[%d].position", numPointLights);
+      setUniform3fv(objShader, posName, pointLight->position);
+
+      char constName[50];
+      sprintf(constName, "pointLights[%d].constant", numPointLights);
+      setUniform1f(objShader, constName, pointLight->constant);
+
+      char linName[50];
+      sprintf(linName, "pointLights[%d].linear", numPointLights);
+      setUniform1f(objShader, linName, pointLight->linear);
+
+      char quadName[50];
+      sprintf(quadName, "pointLights[%d].quadradic", numPointLights);
+      setUniform1f(objShader, quadName, pointLight->quadradic);
+
+      char ambName[50];
+      sprintf(ambName, "pointLights[%d].ambient", numPointLights);
+      setUniform3fv(objShader, ambName, pointLight->ambient);
+
+      char diffName[50];
+      sprintf(diffName, "pointLights[%d].diffuse", numPointLights);
+      setUniform3fv(objShader, diffName, pointLight->diffuse);
+
+      char specName[50];
+      sprintf(specName, "pointLights[%d].specular", numPointLights);
+      setUniform3fv(objShader, specName, pointLight->specular);
+
+      numPointLights++;
+      break;
+    }
+    case SPOT_LIGHT: {
+      SpotLight *spotLight = (SpotLight *)light.lightStruct;
+      char posName[50];
+      sprintf(posName, "spotLights[%d].position", numPointLights);
+      setUniform3fv(objShader, posName, spotLight->position);
+
+      char dirName[50];
+      sprintf(dirName, "spotLights[%d].direction", numSpotLights);
+      setUniform3fv(objShader, dirName, spotLight->direction);
+
+      char innerName[50];
+      sprintf(innerName, "spotLights[%d].innerCutoff", numSpotLights);
+      setUniform1f(objShader, innerName, spotLight->innerCutoff);
+
+      char outerName[50];
+      sprintf(outerName, "spotLights[%d].outterCutoff", numSpotLights);
+      setUniform1f(objShader, outerName, spotLight->outerCutoff);
+
+      char ambName[50];
+      sprintf(ambName, "spotLights[%d].ambient", numSpotLights);
+      setUniform3fv(objShader, ambName, spotLight->ambient);
+
+      char diffName[50];
+      sprintf(diffName, "spotLights[%d].diffuse", numSpotLights);
+      setUniform3fv(objShader, diffName, spotLight->diffuse);
+
+      char specName[50];
+      sprintf(specName, "spotLights[%d].specular", numSpotLights);
+      setUniform3fv(objShader, specName, spotLight->specular);
+
+      numSpotLights++;
+      break;
+    }
+    }
+  }
+  setUniform1i(objShader, "numDirLights", numDirLights);
+  setUniform1i(objShader, "numPointLights", numPointLights);
+  setUniform1i(objShader, "numSpotLights", numSpotLights);
 }

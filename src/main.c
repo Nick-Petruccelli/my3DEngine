@@ -79,7 +79,12 @@ int main() {
   vec3 lightPos = {0.0f, 1.0f, 0.0f};
   vec3 lightRot = {1.2, 3.2, .43};
   vec3 lightScale = {.2, .2, .2};
-  addSceneLight(mainScene, lightColor, lightPos, lightRot, lightScale,
+  vec3 white = {1, 1, 1};
+  PointLight light =
+      createPointLight(lightPos, 1, .09, .032, white, white, white);
+  printf("const: %f\tlin: %f\tquad: %f\n", light.constant, light.linear,
+         light.quadradic);
+  addPointLight(mainScene, &light, lightColor, lightPos, lightRot, lightScale,
                 cubeMeshID);
 
   // render loop
@@ -90,8 +95,9 @@ int main() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // move Light
-    mainScene->sceneLights[0].position[1] = (.5 * cosf(glfwGetTime())) + 1;
-    mainScene->sceneObjects[0].position[2] -= .01;
+    //    mainScene->sceneLights[0].position[1] = (.5 * cosf(glfwGetTime())) +
+    //    1;
+    //  mainScene->sceneObjects[0].position[2] -= .01;
     // move Camera
     camPos[0] = sinf(glfwGetTime()) * 20;
     camPos[2] = cosf(glfwGetTime()) * 20;

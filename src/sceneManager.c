@@ -1,8 +1,11 @@
 #include "../inc/sceneManager.h"
 #include "../inc/glMath.h"
+#include "../inc/lighting.h"
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#define MAX_LIGHTS = 50;
 
 IDQueue *createQueue(unsigned int size) {
   IDQueue *q = malloc(sizeof(IDQueue));
@@ -147,14 +150,51 @@ void removeSceneObject(Scene scene, unsigned int objID) {
   }
 }
 
-unsigned int addSceneLight(Scene *scene, vec3 color, vec3 pos, vec3 rot,
-                           vec3 scale, unsigned int meshID) {
+unsigned int addDirLight(Scene *scene, DirLight *lightStruct) {
+  SceneLight light;
+  light.lightType = DIR_LIGHT;
+  light.lightStruct = lightStruct;
+  if (scene->nextLightID->len == 0) {
+    light.lightID = scene->numLights;
+    scene->sceneLights[light.lightID] = light;
+    scene->numLights++;
+  } else {
+    light.lightID = queuePop(scene->nextLightID);
+    scene->sceneLights[light.lightID] = light;
+    scene->numLights++;
+  }
+
+  return light.lightID;
+}
+
+unsigned int addPointLight(Scene *scene, PointLight *lightStruct, vec3 color,
+                           vec3 pos, vec3 rot, vec3 scale,
+                           unsigned int meshID) {
   SceneLight light;
   copyVec3(color, light.color);
   copyVec3(pos, light.position);
   copyVec3(rot, light.rotation);
   copyVec3(scale, light.scale);
   light.meshID = meshID;
+  light.lightType = POINT_LIGHT;
+  light.lightStruct = lightStruct;
+  if (scene->nextLightID->len == 0) {
+    light.lightID = scene->numLights;
+    scene->sceneLights[light.lightID] = light;
+    scene->numLights++;
+  } else {
+    light.lightID = queuePop(scene->nextLightID);
+    scene->sceneLights[light.lightID] = light;
+    scene->numLights++;
+  }
+
+  return light.lightID;
+}
+
+unsigned int addSpotLight(Scene *scene, SpotLight *lightStruct) {
+  SceneLight light;
+  light.lightType = SPOT_LIGHT;
+  light.lightStruct = lightStruct;
   if (scene->nextLightID->len == 0) {
     light.lightID = scene->numLights;
     scene->sceneLights[light.lightID] = light;
